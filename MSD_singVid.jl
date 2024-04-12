@@ -4,7 +4,7 @@ include("drift_corr.jl")
 include("MSDfun.jl")
 
 ##-- -FOLDER IN WHICH THE .csv ARE STORED -------------
-folder="C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\04.April\\09\\exp1\\"   # name of the folder in wich the CSV file with the results of the tracking is stored
+folder="C:\\Users\\y.brar\\OneDrive - Scuola Superiore Sant'Anna\\Work\\simulations\\Jyoti\\analysis"   # name of the folder in wich the CSV file with the results of the tracking is stored
 filename="VID006"   # name of the raw video
 
 ##--- Made-up INFOs -----------------------------------
@@ -20,7 +20,7 @@ framerate = 12          # fps of the video in analysis
 ##--- Read the data file and save it to a dataframe ---
 #path="Results\\"*folder
 path=folder
-df = CSV.read(path*"tracking_resultscoordinates_"*filename*".csv", DataFrame)
+df = CSV.read(path*"\\coordinates_"*filename*".csv", DataFrame)
 ## --- Operation on the DataFrame: --------------------
 df[!,:BlobID] = convert.(Int64,df[!,:BlobID]);
 df[!,:Frame] = round.(Int64,df[:,:Time]./df[1,:Time])
@@ -105,17 +105,17 @@ display(graphMSD)
 
 
 ##--- SAVE WITHOUT the fit --> this is done in a different script ---
-png(graphsingMSD, path*"singMSD_PROVA"*filename)
-png(graphMSD, path*"MSD_PROVA"*filename)
-png(graphSDtrck, path*"tracks_PROVA"*filename)
+png(graphsingMSD, path*"\\singMSD_PROVA"*filename)
+png(graphMSD, path*"\\MSD_PROVA"*filename)
+png(graphSDtrck, path*"\\tracks_PROVA"*filename)
 
 ##--- Save a .csv with the MSD to overlay plots in a second moment ---
 MSD_df=DataFrame(xMSD=xMSD, MSD=MSD, yerror=dsMSD)
-CSV.write(path*"MSD_PROVA"*filename*".csv", MSD_df)
+CSV.write(path*"\\MSD_PROVA"*filename*".csv", MSD_df)
 
 ##--- Save variables --------------------------------
 d=Dict("length_idx"=>length(idx), "tauMax"=>tauMax,"nTracks"=>nTraks,"um_px"=>um_px, "framerate"=>framerate, "diamPart"=>diamPart,"idx"=>idx,"D"=>D,"Dr"=>Dr,"tr"=>tr)
-JSON3.write(path*"var_PROVA"*filename*".json", d)
+JSON3.write(path*"\\var_PROVA"*filename*".json", d)
 #--to read the JSON3 file and get back the variables--
 #d2= JSON3.read(read("file.json", String))
 #for (key,value) in d2
