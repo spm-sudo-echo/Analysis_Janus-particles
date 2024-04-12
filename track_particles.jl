@@ -26,6 +26,7 @@ VideoIO.save(vid_cured, final_frames,framerate=12)
 crop_io=VideoIO.open(vid_cured)
 crop_vid=VideoIO.openvideo(crop_io)
 
+
 ##
 #----- In this case mask is used to discard the part of the video showing the legend (Hirox) ---- if Mask is not required COMMENT IT INSIDE bt!!
 #mask=trues(1530,2040)       # values in pixels 
