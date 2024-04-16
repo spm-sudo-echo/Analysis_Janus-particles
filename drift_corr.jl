@@ -1,10 +1,6 @@
-using DataFrames
-using NaNStatistics
-using Plots
-using Statistics
-using CSV
 
-function drift_corr(df, um_px, framerate, filename)
+
+function drift_corr(df, um_px, framerate, filename,pathDEST)
     
     # derived information:
     px_um = 1/um_px     # pixel / micron
@@ -121,8 +117,8 @@ function drift_corr(df, um_px, framerate, filename)
     display(plt_tracks)
     
     #---SAVE dataframe with drift correction & Plot-----------
-    CSV.write(path*"\\MSDdriftCorr_"*filename*".csv", df)
-    png(plt_tracks, path*"\\tracks_dc_"*filename)
+    CSV.write(pathDEST*"\\MSDdriftCorr_"*filename*".csv", df)
+    png(plt_tracks, pathDEST*"\\tracks_dc_"*filename)
 
     return gdf_clean_corrected, immobile_tracks, jump_tracks, short_tracks, discard_tracks
 end
