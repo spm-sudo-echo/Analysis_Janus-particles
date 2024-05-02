@@ -28,9 +28,9 @@ mask[mask_y_start:mask_y_end,mask_x_start:mask_x_end].=true
 
 #Path naming for file storage
 filename="VID009"   # name of the video to be tracked
-pathORIG="C:\\Users\\y.brar\\Scuola Superiore Sant'Anna\\Jyoti Sharma - 09\\exp1\\"   # path of the folder containing the video to be tracked
+pathORIG="C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\04.April\\09\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
-pathDEST="C:\\Users\\y.brar\\Scuola Superiore Sant'Anna\\Jyoti Sharma - 09\\exp1\\" *folderDEST   # path of the folder where to store the result of the tracking
+pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
 pathDEST=pathDEST*"_"*datestamp
 mkdir(pathDEST)
@@ -47,7 +47,7 @@ vid  = VideoIO.openvideo(io)
 #
 start_frame=5*12
 #end_frame=size(collect(vid),1)
-end_frame= 60*12
+end_frame= 55*12
 crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
 vid_crop=crop_vid
 #
