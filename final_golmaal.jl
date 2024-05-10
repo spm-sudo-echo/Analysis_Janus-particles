@@ -58,4 +58,4 @@ track_particles(framerate,filename,pathDEST,mask,vid_crop)
 #folder input corresponnds to pathDEST
 mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 
-fitting_linear(pathDEST,filename,diamPart)
+#fitting_linear(pathDEST,filename,diamPart)

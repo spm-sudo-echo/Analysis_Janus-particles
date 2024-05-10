@@ -60,6 +60,7 @@ display(graphSDtrck)
 ##--- Initialize Plot single MSDs -----------------
 graphsingMSD=plot()
 matrMSD=fill(NaN, tauMax+1, length(idx))
+@show active_MSD=fill(NaN, tauMax+1, length(idx))
 xMSD=Array(0:1/framerate:tauMax/framerate)
 
 
@@ -69,12 +70,13 @@ xMSD=Array(0:1/framerate:tauMax/framerate)
 for i in 1:length(idx)#-7
  matrMSD[1:tauMax+1, i] = MSDcal(gdf_clean_corrected[idx[i]],tauMax)
 end
-active_MSD=[]
+
+
 for i in 1:length(idx)
-    matrMSD[103, i]-matrMSD[3, i]
-if  (matrMSD[103, i]- matrMSD[3, i]>= 20.0)
+    
+if  (matrMSD[100, i]- matrMSD[3, i]>= 20.0)
     println("active particle is = $i")
-    push!(active_MSD,matrMSD[:,i])
+       #push!(active_MSD,matrMSD[:,i])
 end
 
 end
