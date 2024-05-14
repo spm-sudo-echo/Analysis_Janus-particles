@@ -55,6 +55,8 @@ vid_crop=crop_vid
 track_particles(framerate,filename,pathDEST,mask,vid_crop)
 
 #mean_sqr_disp.jl variables
+
+pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\analysis_VID005_2024.05.10_15.50.10\\"
 #folder input corresponnds to pathDEST
 mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 
