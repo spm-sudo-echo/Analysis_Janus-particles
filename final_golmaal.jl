@@ -47,10 +47,10 @@ imshow(img)
 #
 start_frame=1*framerate
 #end_frame=size(collect(vid),1)
-end_frame= 47*framerate
+end_frame= 2*framerate
 crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
 vid_crop=crop_vid
-#
+
 #track particle call
 track_particles(framerate,filename,pathDEST,mask,vid_crop)
 

@@ -19,7 +19,7 @@ function track_particles(framerate,filename,pathDEST,mask,vid)
                     10.0,  # σe Measurement noise std. (pixels) (kalman filter param)
                 mask=mask, # image processing before the detection
                 preprocessor = preprocessor, # image processing before the detection
-                    amplitude_th = 0.008, # with less, like 0.007, it may detects false positives
+                    amplitude_th = 0.005, # with less, like 0.007, it may detects false positives
                     correspondence = HungarianCorrespondence(p=0.5, dist_th=4), # dist_th is the number of sigmas away from a predicted location a measurement is accepted.
     )
 
