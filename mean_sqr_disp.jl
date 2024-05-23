@@ -60,32 +60,37 @@ display(graphSDtrck)
 ##--- Initialize Plot single MSDs -----------------
 graphsingMSD=plot()
 matrMSD=fill(NaN, tauMax+1, length(idx))
-@show active_MSD=fill(NaN, tauMax+1, length(idx))
+
 xMSD=Array(0:1/framerate:tauMax/framerate)
 
 
 ##--- Calculate the MSD through the function "MSDfun.jl" ---
 ##--- Return MSD -----------------------------------
 
+par_idx=[]
 for i in 1:length(idx)#-7
  matrMSD[1:tauMax+1, i] = MSDcal(gdf_clean_corrected[idx[i]],tauMax)
-end
-
-
-for i in 1:length(idx)
-    
-if  (matrMSD[100, i]- matrMSD[3, i]>= 20.0)
+ if  (matrMSD[tauMax, i]- matrMSD[3, i]>= 20.0)
     println("active particle is = $i")
-       #push!(active_MSD,matrMSD[:,i])
+    push!(par_idx,i)
+end
 end
 
+active_MSD=fill(NaN, tauMax+1, length(par_idx))
+j=0
+for i in 1:length(par_idx)
+    active_MSD[:,i] = matrMSD[:,par_idx[i]]
 end
 
 
-MSD=vec(nanmean(matrMSD, dims=2))    #mean of MSD, so average plot
-dsMSD=vec(nanstd(matrMSD; dims=2))
+#MSD=vec(nanmean(matrMSD, dims=2))    #mean of MSD, so average plot
+#dsMSD=vec(nanstd(matrMSD; dims=2))
 
-plot!(graphsingMSD,xMSD,matrMSD, ylims=(minlimMSD,maxlimMSD), legend=false)    # plots of the single MSDs of each track
+MSD=vec(nanmean(active_MSD, dims=2))    #mean of MSD, so average plot
+dsMSD=vec(nanstd(active_MSD; dims=2))
+
+#plot!(graphsingMSD,xMSD,matrMSD, ylims=(minlimMSD,maxlimMSD), legend=false)    # plots of the single MSDs of each track
+plot!(graphsingMSD,xMSD,active_MSD, ylims=(minlimMSD,maxlimMSD), legend=false)
 plot!(graphsingMSD,xMSD,MSD, yerror=dsMSD, ylims=(0,200), marker=true,legend=false);    # plots the MSD over the single traks
 xlabel!("Δt [s]");
 ylabel!("MSD [μm²]")
