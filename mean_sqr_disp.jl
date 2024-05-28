@@ -14,8 +14,8 @@ df[!,:y] = df[!,:y]*um_px
 
 ##--- Rendering of the plots -------------------------
 boxtrack=20    # Max X & Y in the box plots 
-maxlimMSD=200   # Y Max in MSD plot
-minlimMSD=-0.1  # Y min in MSD plot
+maxlimMSD=800   # Y Max in MSD plot
+minlimMSD=0.0  # Y min in MSD plot
 
 ##---- On the basis of the entry, calculate: ---------
 D=(1.380649e-23*298)/(6π*1e-3*(diamPart*1e-6/2))*1e12     # Diffusive coefficient (um^2/s)
@@ -87,18 +87,18 @@ end
 #dsMSD=vec(nanstd(matrMSD; dims=2))
 
 MSD=vec(nanmean(active_MSD, dims=2))    #mean of MSD, so average plot
-dsMSD=vec(nanstd(active_MSD; dims=2))
-
+@show dsMSD=vec(nanstd(active_MSD; dims=2))
+std((active_MSD; dims=2))
 #plot!(graphsingMSD,xMSD,matrMSD, ylims=(minlimMSD,maxlimMSD), legend=false)    # plots of the single MSDs of each track
 plot!(graphsingMSD,xMSD,active_MSD, ylims=(minlimMSD,maxlimMSD), legend=false)
-plot!(graphsingMSD,xMSD,MSD, yerror=dsMSD, ylims=(0,200), marker=true,legend=false);    # plots the MSD over the single traks
+plot!(graphsingMSD,xMSD,MSD, #=yerror=dsMSD=# ylims=(minlimMSD,maxlimMSD), marker=true,legend=false);    # plots the MSD over the single traks
 xlabel!("Δt [s]");
 ylabel!("MSD [μm²]")
 display(graphsingMSD)
 
 ##--- Initialize Plot MEDIA MSD ------------------
 graphMSD=plot();
-plot!(graphMSD,xMSD,MSD, yerror=dsMSD, ylims=(minlimMSD,maxlimMSD), marker=true,legend=false);  # plots the MSD alone
+plot!(graphMSD,xMSD,MSD, #=yerror=dsMSD=# ylims=(minlimMSD,maxlimMSD), marker=true,legend=false);  # plots the MSD alone
 xlabel!("Δt [s]");
 ylabel!("MSD [μm²]")
 display(graphMSD)

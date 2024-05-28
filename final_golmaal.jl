@@ -27,8 +27,8 @@ mask=falses(pixel_y,pixel_x)       # values in pixels
 mask[mask_y_start:mask_y_end,mask_x_start:mask_x_end].=true
 
 #Path naming for file storage
-filename="VID005"   # name of the video to be tracked
-pathORIG="C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
+filename="VID002"   # name of the video to be tracked
+pathORIG="C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\17\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
@@ -44,10 +44,10 @@ vid  = VideoIO.openvideo(io)
 img= first(vid)# video_frames[70]
 imshow(img)
 #Cropping video temporally
-#
-start_frame=1*framerate
+
+start_frame= ceil(Int,framerate/10)
 #end_frame=size(collect(vid),1)
-end_frame= 2*framerate
+end_frame= 57*framerate
 crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
 vid_crop=crop_vid
 
@@ -56,7 +56,7 @@ track_particles(framerate,filename,pathDEST,mask,vid_crop)
 
 #mean_sqr_disp.jl variables
 
-pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\analysis_VID005_2024.05.10_15.50.10\\"
+#pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\analysis_VID005_2024.05.10_15.50.10\\"
 #folder input corresponnds to pathDEST
 mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 
