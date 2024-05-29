@@ -24,7 +24,7 @@ tr=(Dr)^(-1)                                              # Rotational time scal
 
 ##--- Apply the drift correction through the function "drift_corr.jl" ---
 ##--- Return gdf_clean_corrected, immobile_tracks, jump_tracks, short_tracks, discard_tracks ---
-gdf_clean_corrected, immobile_tracks, jump_tracks, short_tracks, discard_tracks = drift_corr(df,um_px,framerate,filename,pathDEST)
+gdf_clean_corrected, immobile_tracks, jump_tracks, short_tracks, discard_tracks = drift_correct(df,um_px,framerate,filename,pathDEST)
 
 ##--- Calculate number of detected traks -------------
 nTraks=length(gdf_clean_corrected)

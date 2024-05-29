@@ -10,12 +10,12 @@ include("temporal_crop_video.jl")
 include("mean_sqr_disp.jl")
 #Varaibales for Analysis
 diamPart=3  # mean diameter of the particles to be tracked, in microns
-um_px =  50/255 #for 800x  #100/382 for 600x         # micron to pixel convertion for Hirox microscope 
+um_px =  #=50/255 #for 800x=#  100/382 #for 600x         # micron to pixel convertion for Hirox microscope 
 framerate = 25          # fps of the video in analysis
 pixel_x=2040
 pixel_y=1530
 
-mask_x_start=350
+mask_x_start=502
 mask_x_end=2000
 
 mask_y_start=200
@@ -44,9 +44,10 @@ img= first(vid)# video_frames[70]
 imshow(img)
 #Cropping video temporally
 println("Cropping the video to the desired limits.")
-start_frame=1*framerate
+#start_frame=1*framerate
+start_frame=1
 #end_frame=size(collect(vid),1)
-end_frame= 40*framerate
+end_frame= 48*framerate
 crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
 vid_crop=crop_vid
 println("Tracking the particles in the video.")
