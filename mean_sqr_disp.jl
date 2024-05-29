@@ -14,7 +14,7 @@ df[!,:y] = df[!,:y]*um_px
 
 ##--- Rendering of the plots -------------------------
 boxtrack=20    # Max X & Y in the box plots 
-maxlimMSD=800   # Y Max in MSD plot
+maxlimMSD=1.0   # Y Max in MSD plot
 minlimMSD=0.0  # Y min in MSD plot
 
 ##---- On the basis of the entry, calculate: ---------
@@ -60,9 +60,14 @@ display(graphSDtrck)
 ##--- Initialize Plot single MSDs -----------------
 graphsingMSD=plot()
 matrMSD=fill(NaN, tauMax+1, length(idx))
+drift_part=fill(0.0,tauMax+1,1)
 
 xMSD=Array(0:1/framerate:tauMax/framerate)
 
+##--- Calculating the MSD of a diffusing particle
+for tau in 1:tauMax+1
+    drift_part[tau,1]=4*D*xMSD[tau]
+end
 
 ##--- Calculate the MSD through the function "MSDfun.jl" ---
 ##--- Return MSD -----------------------------------
@@ -70,7 +75,7 @@ xMSD=Array(0:1/framerate:tauMax/framerate)
 par_idx=[]
 for i in 1:length(idx)#-7
  matrMSD[1:tauMax+1, i] = MSDcal(gdf_clean_corrected[idx[i]],tauMax)
- if  (matrMSD[tauMax, i]- matrMSD[3, i]>= 20.0)
+ if  (matrMSD[tauMax+1, i]>drift_part[tauMax+1, 1])
     println("active particle is = $i")
     push!(par_idx,i)
 end
@@ -82,13 +87,19 @@ for i in 1:length(par_idx)
     active_MSD[:,i] = matrMSD[:,par_idx[i]]
 end
 
+##---Calculating the total and active particles
+ap=length(par_idx)
+tp=length(idx)
 
 #MSD=vec(nanmean(matrMSD, dims=2))    #mean of MSD, so average plot
 #dsMSD=vec(nanstd(matrMSD; dims=2))
 
 MSD=vec(nanmean(active_MSD, dims=2))    #mean of MSD, so average plot
-@show dsMSD=vec(nanstd(active_MSD; dims=2))
-std((active_MSD; dims=2))
+dsMSD=vec(nanstd(active_MSD; dims=2))
+#std((active_MSD; dims=2))
+if (ap!=0)
+    maxlimMSD=1.1*maximum(active_MSD)
+end
 #plot!(graphsingMSD,xMSD,matrMSD, ylims=(minlimMSD,maxlimMSD), legend=false)    # plots of the single MSDs of each track
 plot!(graphsingMSD,xMSD,active_MSD, ylims=(minlimMSD,maxlimMSD), legend=false)
 plot!(graphsingMSD,xMSD,MSD, #=yerror=dsMSD=# ylims=(minlimMSD,maxlimMSD), marker=true,legend=false);    # plots the MSD over the single traks
@@ -105,17 +116,19 @@ display(graphMSD)
 
 
 ##--- SAVE WITHOUT the fit --> this is done in a different script ---
-png(graphsingMSD, pathDEST*"\\singMSD"*filename)
-png(graphMSD, pathDEST*"\\MSD_ensemble"*filename)
-png(graphSDtrck, pathDEST*"\\tracks"*filename)
+png(graphsingMSD, pathDEST*"\\singMSD_"*filename)
+title!(graphsingMSD,"Active particles = $ap \n Total Particles = $tp")
+png(graphsingMSD, pathDEST*"\\singMSD_info_"*filename)
+png(graphMSD, pathDEST*"\\MSD_ensemble_"*filename)
+png(graphSDtrck, pathDEST*"\\tracks_"*filename)
 
 ##--- Save a .csv with the MSD to overlay plots in a second moment ---
 MSD_df=DataFrame(tau=xMSD, MSD=MSD, MSDerror=dsMSD)
-CSV.write(pathDEST*"\\MSD_ensemble"*filename*".csv", MSD_df)
+CSV.write(pathDEST*"\\MSD_ensemble_"*filename*".csv", MSD_df)
 
 ##--- Save variables --------------------------------
 d=Dict("length_idx"=>length(idx), "tauMax"=>tauMax,"nTracks"=>nTraks,"um_px"=>um_px, "framerate"=>framerate, "diamPart"=>diamPart,"idx"=>idx,"D"=>D,"Dr"=>Dr,"tr"=>tr)
-JSON3.write(pathDEST*"\\var_PROVA"*filename*".json", d)
+JSON3.write(pathDEST*"\\var_PROVA_"*filename*".json", d)
 #--to read the JSON3 file and get back the variables--
 #d2= JSON3.read(read("file.json", String))
 #for (key,value) in d2

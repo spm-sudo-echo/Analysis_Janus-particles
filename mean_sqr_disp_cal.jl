@@ -29,8 +29,6 @@ function MSDcal(track,tauMax)   # tracks are yours gdf_clean_corrected, tauMax=c
         end
     end
 #    println(length(msd))
-    msd1=msd[3]-msd[2]
-    msd[1]=msd[2]-msd1
     return msd
 
 end

@@ -1,8 +1,7 @@
 # This is the end scrip that incorporates the call to track_paticles.jl and MSD_singVid.jl.
 #The aim is to have one script that includes all the input variables and path definitions.
 
-using BlobTracking, Images, VideoIO, ImageView, FileIO, CSV, DataFrames, Dates
-using StatsPlots, CategoricalArrays, Plots, NaNStatistics, LsqFit, CurveFit, Statistics, JSON3
+using Images, VideoIO, ImageView, FileIO, CSV, DataFrames, Dates, StatsPlots, CategoricalArrays, Plots, NaNStatistics, LsqFit, CurveFit, Statistics, JSON3, BlobTracking
 
 gr()  
 
@@ -22,20 +21,20 @@ mask_x_end=2000
 mask_y_start=200
 mask_y_end=1500
 
-
-mask=falses(pixel_y,pixel_x)       # values in pixels 
-mask[mask_y_start:mask_y_end,mask_x_start:mask_x_end].=true
+mask=trues(pixel_y,pixel_x)
+#mask=falses(pixel_y,pixel_x)       # values in pixels 
+#mask[mask_y_start:mask_y_end,mask_x_start:mask_x_end].=true
 
 #Path naming for file storage
-filename="VID002"   # name of the video to be tracked
-pathORIG="C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\17\\exp1\\"   # path of the folder containing the video to be tracked
+filename="VID004"   # name of the video to be tracked
+pathORIG="C:\\Users\\y.brar\\Scuola Superiore Sant'Anna\\Jyoti Sharma - 2024\\04.April\\29\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
 pathDEST=pathDEST*"_"*datestamp
 mkdir(pathDEST)
 
-
+println("Reading the desired video.")
 pathVID=pathORIG*filename*".wmv"
 io   = VideoIO.open(pathVID)
 vid  = VideoIO.openvideo(io)
@@ -44,18 +43,18 @@ vid  = VideoIO.openvideo(io)
 img= first(vid)# video_frames[70]
 imshow(img)
 #Cropping video temporally
-
-start_frame= ceil(Int,framerate/10)
+println("Cropping the video to the desired limits.")
+start_frame=1*framerate
 #end_frame=size(collect(vid),1)
-end_frame= 57*framerate
+end_frame= 40*framerate
 crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
 vid_crop=crop_vid
-
+println("Tracking the particles in the video.")
 #track particle call
 track_particles(framerate,filename,pathDEST,mask,vid_crop)
 
 #mean_sqr_disp.jl variables
-
+println("Calculating Mean Square Displacement of the tracked particles.")
 #pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\analysis_VID005_2024.05.10_15.50.10\\"
 #folder input corresponnds to pathDEST
 mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
