@@ -1,6 +1,6 @@
 
 
-function drift_corr(df, um_px, framerate, filename,pathDEST)
+function drift_correct(df, um_px, framerate, filename, pathDEST)
     
     # derived information:
     px_um = 1/um_px     # pixel / micron
