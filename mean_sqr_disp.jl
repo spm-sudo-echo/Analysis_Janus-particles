@@ -49,24 +49,26 @@ for i in rand(idx,min(length(idx),10))
     x0i= gdf_clean_corrected[i][1,:x]
     y0i = gdf_clean_corrected[i][1,:y]
     ## Add column and fill it with data
-    plot!(graphSDtrck, gdf_clean_corrected[i][!,:x].-x0i,gdf_clean_corrected[i][!,:y].-y0i, xlims=(-boxtrack,boxtrack), ylims=(-boxtrack,boxtrack),legend=false,aspect_ratio = 1,framestyle = :box)         
+    plot!(graphSDtrck, gdf_clean_corrected[i][!,:x].-x0i,gdf_clean_corrected[i][!,:y].-y0i, xlims=(-boxtrack,boxtrack), ylims=(-boxtrack,boxtrack),legend=false,aspect_ratio = 1,framestyle = :box)    
+  
+      
 end
 
 display(graphSDtrck)
-
 
 ##--- Calculates & Plots the MSD   ---> you may have to change axes limits!!!
 
 ##--- Initialize Plot single MSDs -----------------
 graphsingMSD=plot()
 matrMSD=fill(NaN, tauMax+1, length(idx))
-drift_part=fill(0.0,tauMax+1,1)
+drift_part_neglect=fill(0.0,tauMax+1,1)
+lim_factor=2
 
 xMSD=Array(0:1/framerate:tauMax/framerate)
 
 ##--- Calculating the MSD of a diffusing particle
 for tau in 1:tauMax+1
-    drift_part[tau,1]=4*D*xMSD[tau]
+    drift_part_neglect[tau,1]=lim_factor*4*D*xMSD[tau]
 end
 
 ##--- Calculate the MSD through the function "MSDfun.jl" ---
@@ -75,7 +77,7 @@ end
 par_idx=[]
 for i in 1:length(idx)#-7
  matrMSD[1:tauMax+1, i] = MSDcal(gdf_clean_corrected[idx[i]],tauMax)
- if  (matrMSD[tauMax+1, i]>drift_part[tauMax+1, 1])
+ if  (matrMSD[framerate+1, i]>drift_part_neglect[framerate+1, 1])
     println("active particle is = $i")
     push!(par_idx,i)
 end
@@ -98,7 +100,7 @@ MSD=vec(nanmean(active_MSD, dims=2))    #mean of MSD, so average plot
 dsMSD=vec(nanstd(active_MSD; dims=2))
 #std((active_MSD; dims=2))
 if (ap!=0)
-    maxlimMSD=1.1*maximum(active_MSD)
+    maxlimMSD=2*maximum(MSD)
 end
 #plot!(graphsingMSD,xMSD,matrMSD, ylims=(minlimMSD,maxlimMSD), legend=false)    # plots of the single MSDs of each track
 plot!(graphsingMSD,xMSD,active_MSD, ylims=(minlimMSD,maxlimMSD), legend=false)
