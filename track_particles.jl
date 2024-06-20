@@ -49,7 +49,8 @@ function track_particles(framerate,filename,pathDEST,mask,vid)
     drawimg = RGB.(img)
     draw!(drawimg, traces, c=RGB(0,0,0.5))
     draw!(drawimg, measurement_traces, c=RGB(0.5,0,0))
-    VideoIO.write(vid_super,drawimg,framerate=framerate)
+    VideoIO.write(vid_super,drawimg)
+    VideoIO.close(vid_super)
     end
     save(pathDEST*"\\tracking_"*filename*".png", drawimg)
     #-----> if you just need the coordinates whitout tracking, use this
