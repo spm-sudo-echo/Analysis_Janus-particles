@@ -1,1 +1,20 @@
-(4*Dt+(v^2)*tr)*(x+t0) + (v^2)*(tr^2)*(exp(-2*(x+t0)/tr)-1)/2
+(4*Dt+(v^2)*tr)*x + (v^2)*(tr^2)*(exp(-2*x/tr)-1)/2
+
+when tau<<tr
+
+4*Dt*x+2*(v^2)*x^2
+
+4*Dt*x+(v^2)*x^2
+
+    from the calculations, factor 0.25 is there
+when tau>tr
+
+(4*Dt+(v^2)*tr)*x
+(4*Dt+(v^2)*tr)*x - (v^2)*(tr^2)*0.5
+
+ 0.2        0.5         1
+0.2827      0.2278      0.2183
+2.293       2.406       2.42
+
+
+3

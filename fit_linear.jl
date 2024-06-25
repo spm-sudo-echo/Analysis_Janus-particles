@@ -30,9 +30,9 @@ ydata= df[start_frame:end_frame, :MSD]
 j1= 4*D+ 5*tr
 
 p0 = [0, j1]
-#fit = curve_fit(model, tdata, ydata)
-#param = fit.param
-#yfit= model(tdata, param)
+fit = curve_fit(model, tdata, ydata)
+param = fit.param
+yfit= model(tdata, param)
 
 p=plot(tdata,ydata, seriestype=:scatter, label="Data", xlabel= "Δt(s)", ylabel="MSD_ensemble")
 #q= plot!(tdata,yfit,label="Fitted", title= "p0 = $p0")
