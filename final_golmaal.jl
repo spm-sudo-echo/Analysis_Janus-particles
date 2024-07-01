@@ -1,13 +1,14 @@
 # This is the end scrip that incorporates the call to track_paticles.jl and MSD_singVid.jl.
 #The aim is to have one script that includes all the input variables and path definitions.
 
-using Images, VideoIO, ImageView, FileIO, CSV, DataFrames, Dates, StatsPlots, CategoricalArrays, Plots, NaNStatistics, LsqFit, CurveFit, Statistics, JSON3, BlobTracking
+using Images, VideoIO, ImageView, FileIO, CSV, DataFrames, Dates, StatsPlots, CategoricalArrays, Plots, NaNStatistics, LsqFit, Statistics, JSON3, BlobTracking
 
 gr()  
 
 include("track_particles.jl")
 include("temporal_crop_video.jl")
 include("mean_sqr_disp.jl")
+include("velocity_cal.jl")
 #Varaibales for Analysis
 diamPart=3  # mean diameter of the particles to be tracked, in microns
 um_px =  50/255 #for 800x  #100/382 for 600x         # micron to pixel convertion for Hirox microscope 
@@ -64,13 +65,14 @@ mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 
 end
 
-#=
-filenme="VID019"   # name of the video to be tracked
+=#
+filenome="VID008"   # name of the video to be tracked
 framerate = 25          # fps of the video in analysis
-um_px=50/314 #for 1000x 
+um_px=100/382 
 diamPart=3  # mean diameter of the particles to be tracked, in microns
-pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\06.June\\04\\exp2\\analysis_VID019_2024.06.05_10.14.12\\"
+pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\22\\exp2\\"
 #folder input corresponnds to pathDEST
 
-mean_sqr_disp(pathDEST,filenme,framerate,um_px,diamPart)
-=#
+mean_sqr_disp(pathDEST,filenome,framerate,um_px,diamPart)
+
+velocity_cal(pathDEST,filenome,diamPart)

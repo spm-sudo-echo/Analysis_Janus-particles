@@ -85,8 +85,16 @@ end
 
 active_MSD=fill(NaN, tauMax+1, length(par_idx))
 j=0
+active_part= []
+xxMSD=[]
+single_MSD= []
 for i in 1:length(par_idx)
     active_MSD[:,i] = matrMSD[:,par_idx[i]]
+  for j in eachindex(xMSD)
+    push!(active_part,par_idx[i])
+    push!(xxMSD,xMSD[j])
+    push!(single_MSD,active_MSD[j,i])
+  end
 end
 
 ##---Calculating the total and active particles
@@ -103,8 +111,9 @@ if (ap!=0)
     maxlimMSD=2*maximum(MSD)
 end
 #plot!(graphsingMSD,xMSD,matrMSD, ylims=(minlimMSD,maxlimMSD), legend=false)    # plots of the single MSDs of each track
-plot!(graphsingMSD,xMSD,active_MSD, ylims=(minlimMSD,maxlimMSD), legend=false)
-plot!(graphsingMSD,xMSD,MSD, #=yerror=dsMSD=# ylims=(minlimMSD,maxlimMSD), marker=true,legend=false);    # plots the MSD over the single traks
+plot!(graphsingMSD,xMSD,active_MSD, ylims=(minlimMSD,maxlimMSD),legend=false)
+#plot!(graphsingMSD,xMSD,active_MSD, ylims=(minlimMSD,maxlimMSD), legend=false)
+#plot!(graphsingMSD,xMSD,MSD, #=yerror=dsMSD=# ylims=(minlimMSD,maxlimMSD), marker=true,legend=false);    # plots the MSD over the single traks
 xlabel!("Δt [s]");
 ylabel!("MSD [μm²]")
 display(graphsingMSD)
@@ -124,12 +133,17 @@ png(graphsingMSD, pathDEST*"\\singMSD_info_"*filename)
 png(graphMSD, pathDEST*"\\MSD_ensemble_"*filename)
 png(graphSDtrck, pathDEST*"\\tracks_"*filename)
 
-##--- Save a .csv with the MSD to overlay plots in a second moment ---
+##--- Save a .csv with the MSD of the ensemble --------------
 MSD_df=DataFrame(tau=xMSD, MSD=MSD, MSDerror=dsMSD)
 CSV.write(pathDEST*"\\MSD_ensemble_"*filename*".csv", MSD_df)
 
+##--- Save a .csv with the MSD of individual particles --------------
+MSD_single_df=DataFrame(number=active_part, tau=xxMSD,single_MSD=single_MSD)
+CSV.write(pathDEST*"\\MSD_individual_"*filename*".csv", MSD_single_df)
+
+
 ##--- Save variables --------------------------------
-d=Dict("length_idx"=>length(idx), "tauMax"=>tauMax,"nTracks"=>nTraks,"um_px"=>um_px, "framerate"=>framerate, "diamPart"=>diamPart,"idx"=>idx,"D"=>D,"Dr"=>Dr,"tr"=>tr)
+d=Dict("active particles"=>ap,"total Particles"=>tp,"length_idx"=>length(idx), "tauMax"=>tauMax,"nTracks"=>nTraks,"um_px"=>um_px, "framerate"=>framerate, "diamPart"=>diamPart,"idx"=>idx,"D"=>D,"Dr"=>Dr,"tr"=>tr)
 JSON3.write(pathDEST*"\\var_PROVA_"*filename*".json", d)
 #--to read the JSON3 file and get back the variables--
 #d2= JSON3.read(read("file.json", String))
