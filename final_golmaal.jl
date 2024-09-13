@@ -43,15 +43,15 @@ vid  = VideoIO.openvideo(io)
 
 img= first(vid)# video_frames[70]
 imshow(img)
-#=Cropping video temporally
+#Cropping video temporally
 println("Cropping the video to the desired limits.")
 #start_frame=1*framerate
 start_frame=1*framerate
 #end_frame=size(collect(vid),1)
-end_frame= 48*framerate
+end_frame= 2*framerate
 crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
 vid_crop=crop_vid
-#
+
 #track particle call
 track_particles(framerate,filename,pathDEST,mask,vid_crop)
 
@@ -64,7 +64,7 @@ mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 #fitting_linear(pathDEST,filename,diamPart)
 
 
-
+#=
 filenome="VID003"   # name of the video to be tracked
 framerate = 12          # fps of the video in analysis
 #um_px=100/382 
@@ -73,5 +73,5 @@ pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Micro
 #folder input corresponnds to pathDEST
 
 mean_sqr_disp(pathDEST,filenome,framerate,um_px,diamPart)
-
-velocity_cal(pathDEST,filenome,diamPart)
+=#
+velocity_cal(pathDEST,filename,diamPart)
