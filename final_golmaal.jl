@@ -12,7 +12,7 @@ include("velocity_cal.jl")
 #Varaibales for Analysis
 diamPart=3  # mean diameter of the particles to be tracked, in microns
 um_px =  50/255 #for 800x  #100/382 for 600x         # micron to pixel convertion for Hirox microscope 
-framerate = 25        # fps of the video in analysis
+framerate = 12        # fps of the video in analysis
 pixel_x=2040
 pixel_y=1530
 
@@ -27,8 +27,8 @@ mask=falses(pixel_y,pixel_x)       # values in pixels
 #mask[mask_y_start:mask_y_end,mask_x_start:mask_x_end].=true
 
 #Path naming for file storage
-filename="VID001"   # name of the video to be tracked
 pathORIG="C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - RESEARCH - Documents\\Research\\Data\\HRX_Hirox-microscope\\P19\\PDA activity\\exp1_2.5%\\"   # path of the folder containing the video to be tracked
+filename="VID001"   # name of the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
