@@ -77,9 +77,16 @@ end
 par_idx=[]
 for i in 1:length(idx)#-7
  matrMSD[1:tauMax+1, i] = MSDcal(gdf_clean_corrected[idx[i]],tauMax)
- if  (matrMSD[framerate+1, i]>drift_part_neglect[framerate+1, 1])
-    println("active particle is = $i")
-    push!(par_idx,i)
+ if (tauMax>=framerate)
+    if  (matrMSD[framerate+1, i]>drift_part_neglect[framerate+1, 1])
+        println("active particle is = $i")
+        push!(par_idx,i)
+    end
+else
+    if  (matrMSD[tauMax+1, i]>drift_part_neglect[tauMax+1, 1])
+        println("active particle is = $i")
+        push!(par_idx,i)
+    end
 end
 end
 

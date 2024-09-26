@@ -19,8 +19,8 @@ pixel_y=1500
 mask_x_start=1000
 mask_x_end=2000
 
-mask_y_start=700
-mask_y_end=1100
+mask_y_start=200
+mask_y_end=1500
 
 
 mask=falses(pixel_y,pixel_x)       # values in pixels 
@@ -36,7 +36,7 @@ pathDEST=pathDEST*"_"*datestamp
 mkdir(pathDEST)
 
 println("Reading the desired video.")
-pathVID=pathORIG*filename*".mp4"
+pathVID=pathORIG*filename*".wmv"
 io   = VideoIO.open(pathVID)
 vid  = VideoIO.openvideo(io)
 #video_frames = VideoIO.load(pathVID)
@@ -46,9 +46,9 @@ imshow(img)
 #Cropping video temporally
 println("Cropping the video to the desired limits.")
 #start_frame=1*framerate
-start_frame=1
+start_frame=1*framerate
 #end_frame=size(collect(vid),1)
-end_frame= 4*framerate
+end_frame= 48*framerate
 crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
 vid_crop=crop_vid
 
@@ -63,17 +63,13 @@ mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 
 #fitting_linear(pathDEST,filename,diamPart)
 
-
-
-#=
 filenome="VID008"   # name of the video to be tracked
 framerate = 25          # fps of the video in analysis
 um_px=100/382 
 diamPart=3  # mean diameter of the particles to be tracked, in microns
-pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\22\\exp2\\"
+pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\10\\exp1\\analysis_VID003\\"
 #folder input corresponnds to pathDEST
 
 mean_sqr_disp(pathDEST,filenome,framerate,um_px,diamPart)
 
 velocity_cal(pathDEST,filenome,diamPart)
-=#
