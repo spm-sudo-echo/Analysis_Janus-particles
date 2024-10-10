@@ -1,0 +1,9 @@
+Here the conversion fcators for OVS at 60fps are 
+
+Maginification                             1pixel = xum
+
+200                                        1px=200/220 um                                               220=200um
+400                                        1px=100/222 um                                               222=100um
+600                                        1px=50/167  um                                               167=50um
+800                                        1px=50/224  um                                               224=50um
+1000                                       1px=50/276  um                                               276=50um
