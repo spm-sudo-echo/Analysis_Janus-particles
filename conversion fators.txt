@@ -1,0 +1,11 @@
+these are pixel to um coversation for obs studio
+
+for 1000x 279pixel =50um, 1pixel= 50/279
+
+for 800x 225pixel =50um, 1pixel= 50/225
+
+for 600x 168pixel =50um, 1pixel= 50/168
+
+for 400x 223pixel =100um, 1pixel= 100/223
+
+for 200x 220pixel =100um, 1pixel= 100/220
