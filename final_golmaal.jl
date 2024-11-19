@@ -1,7 +1,7 @@
 # This is the end scrip that incorporates the call to track_paticles.jl and MSD_singVid.jl.
 #The aim is to have one script that includes all the input variables and path definitions.
 
-using Images, VideoIO, ImageView, FileIO, CSV, DataFrames, Dates, StatsPlots, CategoricalArrays, Plots, NaNStatistics, LsqFit, Statistics, JSON3, BlobTracking
+using Images, VideoIO, ImageView, FileIO, CSV, DataFrames, Dates, StatsPlots, CategoricalArrays, Plots, NaNStatistics, LsqFit, Statistics, JSON3, FFMPEG, BlobTracking
 
 gr()  
 
@@ -22,13 +22,13 @@ mask_x_end=2000
 mask_y_start=800
 mask_y_end=1500
 
-
-mask=falses(pixel_y,pixel_x)       # values in pixels 
-#mask[mask_y_start:mask_y_end,mask_x_start:mask_x_end].=true
+# mask=falses(pixel_y,pixel_x)       # values in pixels 
+# mask[mask_y_start:mask_y_end,mask_x_start:mask_x_end].=true
+mask=trues(pixel_y,pixel_x)  
 
 #Path naming for file storage
-filename="VID002"   # name of the video to be tracked
-pathORIG=raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\Experiments\2024\11.November\18\exp1\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
+filename="VID006"   # name of the video to be tracked
+pathORIG="C:\\Users\\y.brar\\Scuola Superiore Sant'Anna\\Jyoti Sharma - 2024\\11.November\\18\\exp1\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
@@ -43,14 +43,15 @@ vid  = VideoIO.openvideo(io)
 
 img= first(vid)# video_frames[70]
 imshow(img)
-#Cropping video temporally
-println("Cropping the video to the desired limits.")
+# #Cropping video temporally
+# println("Cropping the video to the desired limits.")
 # #start_frame=1*framerate
 # start_frame=1 #*framerate
 # #end_frame=size(collect(vid),1)
-# end_frame= 2*framerate
+# end_frame= 10#2*framerate
 # crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
 # vid_crop=crop_vid
+# VideoIO.close(vid)
 
 #track particle call
 println("Tracking the particles.")
