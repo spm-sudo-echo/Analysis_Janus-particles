@@ -41,21 +41,21 @@ function track_particles(framerate,filename,pathDEST,mask,vid)
     measurement_traces = tracem(result, minlife=5)
     vid_super=pathDEST*"\\super_vid_"*filename*".avi"
 
-    frame_c=collect(vid)
-    #start_frame=1
-    #end_frame=size(frame_c,1)
-    final_frames=frame_c[start_frame:end_frame,]
-    for frame in frame_c
-        img= vid[frame]
-        println("in the animation")
-    img=mask.*img
-    drawimg = RGB.(img)
-    draw!(drawimg, traces, c=RGB(0,0,0.5))
-    draw!(drawimg, measurement_traces, c=RGB(0.5,0,0))
-    VideoIO.write(vid_super,drawimg)
-    VideoIO.close(vid_super)
-    end
-    save(pathDEST*"\\tracking_"*filename*".png", drawimg)
+    # frame_c=collect(vid)
+    # #start_frame=1
+    # #end_frame=size(frame_c,1)
+    # final_frames=frame_c[start_frame:end_frame,]
+    # for frame in frame_c
+    #     img= vid[frame]
+    #     println("in the animation")
+    # img=mask.*img
+    # drawimg = RGB.(img)
+    # draw!(drawimg, traces, c=RGB(0,0,0.5))
+    # draw!(drawimg, measurement_traces, c=RGB(0.5,0,0))
+    # VideoIO.write(vid_super,drawimg)
+    # VideoIO.close(vid_super)
+    # end
+    # save(pathDEST*"\\tracking_"*filename*".png", drawimg)
     #-----> if you just need the coordinates whitout tracking, use this
     #coords = get_coordinates(bt, vid)
 
