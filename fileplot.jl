@@ -1,9 +1,9 @@
-using Plots
+using Plots, CSV
 
-path = "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\"
+path = "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\11.November\\18\\exp1\\"
 
 f= path*"velocity_histogram.png"
-fv= path*"velocity_individual.csv"
+fv= path*"all_velocity_exp1.csv"
 
 df= CSV.read(fv,DataFrame)
 #x= ["30s" "60s"  "120s"]
@@ -12,6 +12,6 @@ df= CSV.read(fv,DataFrame)
 
 x= df[:,:velocity]
 
-p1=histogram(x,xlabel="velocity(um/s)",ylabel="no. of particles",ylims= (0,15), xtickfont=font(12), ytickfont=font(12),color= :lightblue, legend= false)
+p1=histogram(x,xlabel="velocity(um/s)",ylabel="no. of particles",ylims= (0,40), xtickfont=font(12), ytickfont=font(12),color= :lightblue, legend= false)
 
 savefig(p1,f)

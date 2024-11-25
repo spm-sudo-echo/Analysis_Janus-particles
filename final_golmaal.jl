@@ -27,8 +27,8 @@ mask_y_end=1500
 mask=trues(pixel_y,pixel_x)  
 
 #Path naming for file storage
-filename="VID006"   # name of the video to be tracked
-pathORIG="C:\\Users\\y.brar\\Scuola Superiore Sant'Anna\\Jyoti Sharma - 2024\\11.November\\18\\exp1\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
+filename="VID014"   # name of the video to be tracked
+pathORIG="C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\11.November\\18\\exp2\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
@@ -66,12 +66,12 @@ mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 
 #fitting_linear(pathDEST,filename,diamPart)
 
-# filenome="VID008"   # name of the video to be tracked
-# framerate = 25          # fps of the video in analysis
-# um_px=100/382 
-# diamPart=3  # mean diameter of the particles to be tracked, in microns
-# pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\10\\exp1\\analysis_VID003\\"
-# #folder input corresponnds to pathDEST
+filenome="VID001"   # name of the video to be tracked
+framerate = 25          # fps of the video in analysis
+um_px=50/316 
+diamPart=3  # mean diameter of the particles to be tracked, in microns
+pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\11.November\\18\\exp1\\analysis_VID001_2024.11.19_13.42.52\\"
+#folder input corresponnds to pathDEST
 
-# mean_sqr_disp(pathDEST,filenome,framerate,um_px,diamPart)
-# velocity_cal(pathDEST,filename,diamPart)
+mean_sqr_disp(pathDEST,filenome,framerate,um_px,diamPart)
+velocity_cal(pathDEST,filenome,diamPart)
