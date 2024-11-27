@@ -37,11 +37,6 @@ function monolayer_analysis(binary_img; defect_size_threshold, multilayer_size_t
     return combined_img, defect_mask, multilayer_mask
 end
 
-
-
-
-
-
 # function monolayer_analysis(binary_img, max_radius)
 #     # Label the connected components in the binary image
 #     labeled_img = label_components(binary_img)
