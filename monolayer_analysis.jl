@@ -1,26 +1,39 @@
 function monolayer_analysis(binary_img; defect_size_threshold, multilayer_size_threshold)
     # Step 1: Identify connected components
-    labeled_img = label_components(binary_img)
-    unique_labels = unique(labeled_img)[2:end]  # Exclude background (label 0)
-    
+    labeled_img = label_components(binary_img) 
+ @show unique_labels = unique(labeled_img)[2:end]  # Exclude background (label 0)
+    imshow(binary_img)
     # Create defect and multilayer masks
     defect_mask = falses(size(binary_img))
     multilayer_mask = falses(size(binary_img))
     
     for label in unique_labels
         # Find indices of current component
-        component_indices = findall(labeled_img .== label)
-        component_size = length(component_indices)
+       component_indices = findall(labeled_img .== label)
+    component_size = length(component_indices)
         
-        if component_size <= defect_size_threshold
-            # Mark as defect
-            for idx in component_indices
-                defect_mask[Tuple(idx)...] = true
-            end
-        elseif component_size >= multilayer_size_threshold
-            # Mark as multilayer
+        # if component_size <= defect_size_threshold
+        #     # Mark as defect
+        #     for idx in component_indices
+        #         defect_mask[Tuple(idx)...] = true
+        #     end
+        # elseif component_size >= multilayer_size_threshold
+        #     # Mark as multilayer
+        #     for idx in component_indices
+        #         multilayer_mask[Tuple(idx)...] = true
+        #     end
+        # end
+        # if component_size >= 100 && component_size <= 700
+        #     # Mark as particle
+        #     for idx in component_indices
+        #         defect_mask[Tuple(idx)...] = true
+        #     end
+        # end
+        if component_size >= 1 && component_size <= 70
+            # Mark as particle
             for idx in component_indices
                 multilayer_mask[Tuple(idx)...] = true
+                println("in multilayer mask")
             end
         end
     end
