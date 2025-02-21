@@ -3,8 +3,8 @@ using Images, ImageView, ImageDraw, ImageShow, ImageCore, Colors, ColorTypes, Fi
 
 include("monolayer_analysis.jl")
 include("superimpose_binary_matrices.jl")
-pathi= raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\liposome_analysis"
-name= "700x_1_stage_light.jpg"
+pathi= raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\Experiments\2024\12.December\05\exp1"
+name= "IMG023.jpg"
 
 path= pathi*"\\"*name
  img= load(path)
@@ -24,8 +24,8 @@ save(pathi*"\\background_subtracted.png",Gray.(normalized_img))
 #threshold_value = otsu_threshold(background_subtracted)
 
 threshold_value = otsu_threshold(background_subtracted)
-binary_img = background_subtracted.>0.2
-imshow(binary_img)
+@show binary_img = background_subtracted.< 0.0
+imshow(.!binary_img)
 save(pathi*"\\binay_img.png",binary_img)
 
 ##test code

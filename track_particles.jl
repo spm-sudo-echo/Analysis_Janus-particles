@@ -10,24 +10,31 @@ function track_particles(framerate,filename,pathDEST,mask,vid)
     #---- Preprocessor is used , in this case to revert black & white (NIKON) :-----
     function preprocessor(storage, img)
         storage .= Float32.(img)
+    #     gray_img = channelview(ColorTypes.Gray.(img))
+    #     gaussian_kernel = Kernel.gaussian(50)
+
+    #     background = imfilter(gray_img, gaussian_kernel)
+    # background_subtracted = gray_img .- background
+    # threshold_value = otsu_threshold(background_subtracted)
+    # binary_img = background_subtracted.>threshold_value
         #update!(medbg, storage) # update the background model
-        storage .= abs.(1 .- img)  # You can save some computation by not calculating a new background image every sample
+        @show storage .= abs.(1 .- img)  # You can save some computation by not calculating a new background image every sample
     end
 
     bt = BlobTracker(6:8, # array of blob sizes we want to detect
-                    3.0, # σw Dynamics noise std. (kalman filter param)
-                    10.0,  # σe Measurement noise std. (pixels) (kalman filter param)
+                    3.0, # σw Dynamics noise std. (kalman filter param), increase for faster and noisy blobs
+                    10.0,  # σe Measurement noise std. (pixels) (kalman filter param), increase for blurry images
                 mask=mask, # image processing before the detection
                 preprocessor = preprocessor, # image processing before the detection
                  
 
                   
-                    amplitude_th = 0.007, # with less, like 0.007, it may detects false positives
-                    correspondence = HungarianCorrespondence(p=0.5, dist_th=4), # dist_th is the number of sigmas away from a predicted location a measurement is accepted.
+                    amplitude_th = 0.01, # with less, like 0.007, it may detects false positives
+                    correspondence = HungarianCorrespondence(p=1.0, dist_th=1), # dist_th is the number of sigmas away from a predicted location a measurement is accepted.
     )
 
     #tune_size can be used to automatically tune the size array in bt based on img (the first img of vid). not mandatory.
-    #tune_sizes(bt, img)
+    # tune_sizes(bt, img)
     
     result = track_blobs(bt, vid,
                             display = nothing; #Base.display, # use nothing to omit displaying.

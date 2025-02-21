@@ -1,8 +1,8 @@
 function monolayer_analysis(binary_img; defect_size_threshold, multilayer_size_threshold)
     # Step 1: Identify connected components
     labeled_img = label_components(binary_img) 
- @show unique_labels = unique(labeled_img)[2:end]  # Exclude background (label 0)
-    imshow(binary_img)
+ unique_labels = unique(labeled_img)[2:end]  # Exclude background (label 0)
+    # imshow(binary_img)
     # Create defect and multilayer masks
     defect_mask = falses(size(binary_img))
     multilayer_mask = falses(size(binary_img))
@@ -23,19 +23,19 @@ function monolayer_analysis(binary_img; defect_size_threshold, multilayer_size_t
         #         multilayer_mask[Tuple(idx)...] = true
         #     end
         # end
-        # if component_size >= 100 && component_size <= 700
-        #     # Mark as particle
-        #     for idx in component_indices
-        #         defect_mask[Tuple(idx)...] = true
-        #     end
-        # end
-        if component_size >= 1 && component_size <= 70
+        if component_size >= 1 && component_size <= defect_size_threshold
             # Mark as particle
             for idx in component_indices
-                multilayer_mask[Tuple(idx)...] = true
-                println("in multilayer mask")
+                defect_mask[Tuple(idx)...] = true
             end
         end
+        # if component_size >= 1 && component_size <= 100
+        #     # Mark as particle
+        #     for idx in component_indices
+        #         multilayer_mask[Tuple(idx)...] = true
+        #         println("in multilayer mask")
+        #     end
+        # end
     end
     
     # Step 2: Superimpose the masks onto the original binary image
@@ -43,9 +43,9 @@ function monolayer_analysis(binary_img; defect_size_threshold, multilayer_size_t
     for idx in findall(defect_mask)
         combined_img[Tuple(idx)...] = RGB(1.0, 0.0, 0.0)  # Red for defects
     end
-    for idx in findall(multilayer_mask)
-        combined_img[Tuple(idx)...] = RGB(0.0, 0.0, 1.0)  # Blue for multilayers
-    end
+    # for idx in findall(multilayer_mask)
+    #     combined_img[Tuple(idx)...] = RGB(0.0, 0.0, 1.0)  # Blue for multilayers
+    # end
     
     return combined_img, defect_mask, multilayer_mask
 end
