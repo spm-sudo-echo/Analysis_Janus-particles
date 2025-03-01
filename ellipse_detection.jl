@@ -59,5 +59,11 @@ function analyze_ellipse_and_major_axis(img)
     m1, m2 = tan(-θ), tan(θ)
     b1, b2 = y0 - m1 * x0, y0 - m2 * x0
 
-    return (m1 = m1, m2 = m2, b1 = b1, b2 = b2)
+    return (
+        x0=x0,
+        y0=y0,
+        a=major_axis_length,
+        b=minor_axis_length,
+        theta=θ
+        )
 end

@@ -10,8 +10,12 @@ outfile = "testttt..equators_ellipse21_v3"
 x_min, x_max = 360, 980
 y_min, y_max = 750, 925
 
+
 # ---- Utility Function to Create Masks ----
-function create_ellipse_masks(img_size,m1,m2,b1,b2)
+function create_ellipse_masks(img_size,x0,y0,a,b,theta)
+    θ = atan(b, a)
+    m1, m2 = tan(-θ), tan(θ)
+    b1, b2 = y0 - m1 * x0, y0 - m2 * x0
     maskeqL,maskeqR,maskpoleU,maskpoleD = ntuple(_->falses(img_size), 4)
     for i in 1:img_size[1], j in 1:img_size[2]
         if i < j*m1 + b1 && i > j*m2 + b2
@@ -22,6 +26,12 @@ function create_ellipse_masks(img_size,m1,m2,b1,b2)
             maskpoleU[i, j] = true
         elseif i> j*m1 + b1 && i > j*m2 + b2
             maskpoleD[i, j] = true
+        end
+        if ((j-x0)cos(theta)+(i-y0)sin(theta))^2/a^2 + ((j-x0)sin(theta)-(i-y0)cos(theta))^2/b^2 > 1
+            maskeqL[i, j] = false
+            maskeqR[i, j] = false
+            maskpoleU[i, j] = false
+            maskpoleD[i, j] = false
         end
     end
 
@@ -69,13 +79,13 @@ function analyze_video()
 
     first_img = first(vid)
     cropped_img = first_img[y_min:y_max, x_min:x_max]
-    m1,m2,b1,b2=analyze_ellipse_and_major_axis(cropped_img) 
+    x0,y0,a,b,theta=analyze_ellipse_and_major_axis(cropped_img) 
 
     # Save cropped image
     save(pathi * "\\single_ellipse21.png", cropped_img)
 
     # Generate masks for left/right ellipse regions
-    maskeqL, maskeqR, maskpoleU, maskpoleD = create_ellipse_masks(size(cropped_img),m1,m2,b1,b2)
+    maskeqL, maskeqR, maskpoleU, maskpoleD = create_ellipse_masks(size(cropped_img),x0,y0,a,b,theta)
 
     # Process all frames
     frame_count = 0
