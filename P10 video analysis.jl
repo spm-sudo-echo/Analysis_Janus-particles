@@ -1,5 +1,5 @@
 using Images, VideoIO, DataFrames, CSV, ImageShow, Statistics, ColorTypes
-include(ellipse_detection.jl)
+include("ellipse_detection.jl")
 # ---- Configuration ----
 pathi = raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\Experiments\2024\12.December\05\exp1\\"
 name_vid = "VID001"
@@ -76,7 +76,7 @@ function analyze_video()
 
     first_img = first(vid)
     cropped_img = first_img[y_min:y_max, x_min:x_max]
-    m1,m2,b1,b2=ellipse_detection(cropped_img) 
+    m1,m2,b1,b2=analyze_ellipse_and_major_axis(cropped_img) 
 
     # Save cropped image
     save(pathi * "\\single_ellipse21.png", cropped_img)
