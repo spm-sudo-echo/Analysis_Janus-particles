@@ -1,4 +1,4 @@
-using Images, VideoIO, DataFrames, CSV, ImageShow, Statistics, ColorTypes
+using Images, VideoIO, DataFrames, CSV, ImageShow, Statistics, ColorTypes, ImageSegmentation, CoordinateTransformations, Optim, LinearAlgebra, ImageView
 include("ellipse_detection.jl")
 # ---- Configuration ----
 pathi = raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\Experiments\2024\12.December\05\exp1\\"
@@ -9,13 +9,6 @@ outfile = "testttt..equators_ellipse21_v2"
 # ---- Crop Region and Ellipse Parameters ----
 x_min, x_max = 360, 980
 y_min, y_max = 750, 925
-#xc, yc = 325, 90     # ellipse center in cropped image
-#a, b = 592, 150      # major/minor axes
-
-# ---- Calculate Cutting Line Slopes ----
-#θ = atan(b, a)
-#m1, m2 = tan(-θ), tan(θ)
-#b1, b2 = yc - m1 * xc, yc - m2 * xc
 
 # ---- Utility Function to Create Masks ----
 function create_ellipse_masks(img_size,m1,m2,b1,b2)
