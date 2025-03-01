@@ -57,8 +57,8 @@ function analyze_ellipse_and_major_axis(img)
     return (
         x0=x0,
         y0=y0,
-        a=major_axis_length,
-        b=minor_axis_length,
+        a=major_axis_length/2,
+        b=minor_axis_length/2,
         theta=theta
         )
 end
