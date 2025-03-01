@@ -1,5 +1,5 @@
 using Images, VideoIO, DataFrames, CSV, ImageShow, Statistics, ColorTypes
-
+include(ellipse_detection.jl)
 # ---- Configuration ----
 pathi = raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\Experiments\2024\12.December\05\exp1\\"
 name_vid = "VID001"
@@ -9,16 +9,16 @@ outfile = "testttt..equators_ellipse21_v2"
 # ---- Crop Region and Ellipse Parameters ----
 x_min, x_max = 360, 980
 y_min, y_max = 750, 925
-xc, yc = 325, 90     # ellipse center in cropped image
-a, b = 592, 150      # major/minor axes
+#xc, yc = 325, 90     # ellipse center in cropped image
+#a, b = 592, 150      # major/minor axes
 
 # ---- Calculate Cutting Line Slopes ----
-θ = atan(b, a)
-m1, m2 = tan(-θ), tan(θ)
-b1, b2 = yc - m1 * xc, yc - m2 * xc
+#θ = atan(b, a)
+#m1, m2 = tan(-θ), tan(θ)
+#b1, b2 = yc - m1 * xc, yc - m2 * xc
 
 # ---- Utility Function to Create Masks ----
-function create_ellipse_masks(img_size)
+function create_ellipse_masks(img_size,m1,m2,b1,b2)
     maskeqL,maskeqR,maskpoleU,maskpoleD = ntuple(_->falses(img_size), 4)
     for i in 1:img_size[1], j in 1:img_size[2]
         if i < j*m1 + b1 && i > j*m2 + b2
@@ -76,12 +76,13 @@ function analyze_video()
 
     first_img = first(vid)
     cropped_img = first_img[y_min:y_max, x_min:x_max]
+    m1,m2,b1,b2=ellipse_detection(cropped_img) 
 
     # Save cropped image
     save(pathi * "\\single_ellipse21.png", cropped_img)
 
     # Generate masks for left/right ellipse regions
-    maskeqL, maskeqR, maskpoleU, maskpoleD = create_ellipse_masks(size(cropped_img))
+    maskeqL, maskeqR, maskpoleU, maskpoleD = create_ellipse_masks(size(cropped_img),m1,m2,b1,b2)
 
     # Process all frames
     frame_count = 0
