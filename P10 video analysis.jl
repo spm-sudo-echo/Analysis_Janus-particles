@@ -1,132 +1,109 @@
-# Intensity value analysis of a particles in the ellipse video
-# each video first set the correct parameters from the first(vid) image and then run the loop for each frame
-# testing for new changes
-using Images,VideoIO, DataFrames, CSV,ImageView, ImageDraw, ImageShow, FileIO, Statistics 
-pathi= raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\Experiments\2024\12.December\05\exp1\\"
-name_photo= "IMG022.jpg"
-name_vid= "VID001"
-# path_photo= pathi*name_photo
-# img=load(path_photo)
-# imshow(RGB.(img))
-pathVID=pathi*name_vid*".avi"
-outfile= "analysis_eqR_ellipse21"
-time_start= time()
-io   = VideoIO.open(pathVID)
-vid  = VideoIO.openvideo(io)
+using Images, VideoIO, DataFrames, CSV, ImageShow, Statistics, ColorTypes
 
+# ---- Configuration ----
+pathi = raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\Experiments\2024\12.December\05\exp1\\"
+name_vid = "VID001"
+pathVID = pathi * name_vid * ".avi"
+outfile = "testttt..equators_ellipse21_v2"
+
+# ---- Crop Region and Ellipse Parameters ----
 x_min, x_max = 360, 980
 y_min, y_max = 750, 925
-first_img= first(vid)
-final_img=first_img[y_min:y_max, x_min:x_max] # use this to cut the single ellipse
-imshow(final_img) # showing the cut image of the ellipse
-final_img_eqL=first_img[y_min:y_max, x_min:x_max] # use this to cut the single ellipse
-imshow(final_img_eqL) # showing the cut image of the ellipse
-final_img_eqR=first_img[y_min:y_max, x_min:x_max] # use this to cut the single ellipse
-imshow(final_img_eqR) # showing the cut image of the ellipse
-save(pathi*"\\single_ellipse21.png",final_img)
-xc, yc = 325, 90     # centre of the ellipse w.r.t the cut image
-a, b = 592, 150      # major and minor axis of the ellipse w.r.t the cut image
-θ= atan(b,a)
-m2= tan(θ) # slope of the first cutting line at theta angle w.r.t the cut image
-m1= tan(-θ) # slope of the second cutting line at theta angle w.r.t the cut image
-b1 = yc - m1*xc
-b2 = yc - m2*xc
-# xe1, ye1 = 100, 50     # first cutting point in the cone w.r.t the cut image
-# xe2, ye2 = 546, 36  # second cutting point in the cone w.r.t the cut image
-# m1 = (ye1 - yc)/(xe1 - xc)
-# 
-# m2 = (ye2 - yc)/(xe2 - xc)
-# 
-global maskeqL=falses(size(final_img_eqL))
-global maskeqR=falses(size(final_img_eqR))
-for i in 1:size(final_img,1)
-    for j in 1:size(final_img,2)
+xc, yc = 325, 90     # ellipse center in cropped image
+a, b = 592, 150      # major/minor axes
+
+# ---- Calculate Cutting Line Slopes ----
+θ = atan(b, a)
+m1, m2 = tan(-θ), tan(θ)
+b1, b2 = yc - m1 * xc, yc - m2 * xc
+
+# ---- Utility Function to Create Masks ----
+function create_ellipse_masks(img_size)
+    maskeqL,maskeqR,maskpoleU,maskpoleD = ntuple(_->falses(img_size), 4)
+    for i in 1:img_size[1], j in 1:img_size[2]
         if i < j*m1 + b1 && i > j*m2 + b2
-            maskeqL[i,j] = true
+            maskeqL[i, j] = true
         elseif i > j*m1 + b1 && i < j*m2 + b2
-            maskeqR[i,j] = true
+            maskeqR[i, j] = true
+        elseif i< j*m1 + b1 && i < j*m2 + b2
+            maskpoleU[i, j] = true
+        elseif i> j*m1 + b1 && i > j*m2 + b2
+            maskpoleD[i, j] = true
         end
     end
+
+    return maskeqL, maskeqR, maskpoleU, maskpoleD
+end
+# ---- Findind all the black pixels in the image created by mask and converting them to white----
+function findallblack(maskeqL, maskeqR, maskpoleU, maskpoleD)
+    img_turn_eqL=findall(p -> p ==RGB{N0f8}(0.0,0.0,0.0), maskeqL)
+    maskeqL[img_turn_eqL].=true
+    img_turn_eqR=findall(p -> p ==RGB{N0f8}(0.0,0.0,0.0), maskeqR)
+    maskeqR[img_turn_eqR].=true
+    img_turn_poleU=findall(p -> p ==RGB{N0f8}(0.0,0.0,0.0), maskpoleU)
+    maskpoleU[img_turn_poleU].=true
+    img_turn_poleD=findall(p -> p ==RGB{N0f8}(0.0,0.0,0.0), maskpoleD)
+    maskpoleD[img_turn_poleD].=true
+    return maskeqL, maskeqR, maskpoleU, maskpoleD
 end
 
-final_img_eqL=final_img.*maskeqL
-final_img_eqR=final_img.*maskeqR
+# ---- Process One Frame below a threshold_value----
+function process_frame(frame, maskeqL, maskeqR, maskpoleU, maskpoleD, threshold)
+    cropped = frame[y_min:y_max, x_min:x_max]
+    maskeqL, maskeqR, maskpoleU, maskpoleD = cropped .* maskeqL, cropped .* maskeqR, cropped .* maskpoleU, cropped .* maskpoleD
+    maskeqL, maskeqR, maskpoleU, maskpoleD = findallblack(maskeqL, maskeqR, maskpoleU, maskpoleD)
+    # Convert to grayscale
+    grayL = channelview(ColorTypes.Gray.(maskeqL))
+    grayR = channelview(ColorTypes.Gray.(maskeqR))
+    grayU = channelview(ColorTypes.Gray.(maskpoleU))
+    grayD = channelview(ColorTypes.Gray.(maskpoleD))
 
-imshow(final_img_eqL)
-imshow(final_img_eqR)
-#                                   
-# gray_img = channelview(ColorTypes.Gray.(final_img))
-# enhanced_img = histeq(gray_img,10)
-# imshow(final_img)
-# imshow(gray_img)
-# imshow(enhanced_img)
+    # Find dark pixels
+    blackeqL = findall(p -> 0 ≤ p ≤ threshold, grayL)
+    blackeqR = findall(p -> 0 ≤ p ≤ threshold, grayR)
+    blackpoleU = findall(p -> 0 ≤ p ≤ threshold, grayU)
+    blackpoleD = findall(p -> 0 ≤ p ≤ threshold, grayD)
 
-save(pathi*name_vid*outfile*".jpg",final_img)
- frame_count = 0
- number= []
- particles= []
- peqL= []
- peqR= []
-for frame in vid
-    img=frame
-    img = img[y_min:y_max, x_min:x_max]
-# imshow(img)
-# mask=falses(size(img))
-# for i in 1:size(img,1)
-#     for j in 1:size(img,2)
-#         if i > m1*j + b1 && i < m2*j + b2
-#             mask[i,j] = true
-#         end
-#     end
-# end
-
-imgeqL=img.*maskeqL
-imgeqR=img.*maskeqR
-# imshow(img)
-img_turn_eqL=findall(p -> p ==RGB{N0f8}(0.0,0.0,0.0), imgeqL)
-imgeqL[img_turn_eqL].=true
-img_turn_eqR=findall(p -> p ==RGB{N0f8}(0.0,0.0,0.0), imgeqR)
-imgeqL[img_turn_eqR].=true
-# imshow(img)
- global frame_count
-    frame_count = frame_count .+ 1
-    # imshow(RGB.(img))
-    # img = img[y_min:y_max, x_min:x_max]
-    # imshow(RGB.(img))
-    gray_imgeqL = channelview(ColorTypes.Gray.(imgeqL))
-    gray_imgeqR = channelview(ColorTypes.Gray.(imgeqR))
-    # imshow(gray_img)
-    # enhanced_img = histeq(gray_img,50)
-    #crop_img = enhanced_img[y_min:y_max, x_min:x_max]
-    # imshow(enhanced_img)
-    black_pixels_eqL = findall(p -> 0 ≤ p ≤ 0.45, gray_imgeqL)
-    black_pixels_eqR = findall(p -> 0 ≤ p ≤ 0.45, gray_imgeqR)
-    # println( "black pixels are ", length(black_pixels))
-    push!(number,frame_count)
-    push!(peqL,length(black_pixels_eqL))
-    push!(peqR,length(black_pixels_eqR))
-    # println("In Frame $frame_count...." , "black pixels are ", length(black_pixels))
-    # sleep(0.1)
+    return length(blackeqL), length(blackeqR), length(blackpoleU), length(blackpoleD)
 end
 
-df=DataFrame(frame=number,peqL=peqL,peqR=peqR)
-file= pathVID*name_vid*outfile*".csv"
-CSV.write(file, df)
-time_end= time()
-println("Time taken is ", time_end-time_start)
+# ---- Main Processing ----
+function analyze_video()
+    time_start = time()
 
-# threshold_value = otsu_threshold(gray_img)
-# binary_img = background_subtracted.> threshold_value
-# imshow(binary_img)
-########################### background thresholding ############################
-# gaussian_kernel = Kernel.gaussian(200)
+    io = VideoIO.open(pathVID)
+    vid = VideoIO.openvideo(io)
 
-# background = imfilter(gray_img, gaussian_kernel)
-# background_subtracted = gray_img .- background
-# imshow(Gray.(background_subtracted))
-# normalized_img = map(clamp01, background_subtracted)
-# imshow(background_subtracted)
-# imshow(normalized_img)
-# threshold_value = otsu_threshold(background_subtracted)
-# binary_img = background_subtracted.> threshold_value
-# imshow(binary_img)
+    first_img = first(vid)
+    cropped_img = first_img[y_min:y_max, x_min:x_max]
+
+    # Save cropped image
+    save(pathi * "\\single_ellipse21.png", cropped_img)
+
+    # Generate masks for left/right ellipse regions
+    maskeqL, maskeqR, maskpoleU, maskpoleD = create_ellipse_masks(size(cropped_img))
+
+    # Process all frames
+    frame_count = 0
+    number, peqL, peqR, poleU, poleD = Int[], Int[], Int[], Int[], Int[]
+
+    for frame in vid
+        frame_count += 1
+        countL, countR, countU, countD = process_frame(frame, maskeqL, maskeqR, maskpoleU, maskpoleD, 0.45)
+
+        push!(number, frame_count)
+        push!(peqL, countL)
+        push!(peqR, countR)
+        push!(poleU, countU)
+        push!(poleD, countD)
+    end
+
+    # Save results to CSV
+    df = DataFrame(frame=number, peqL=peqL, peqR=peqR, poleU=poleU, poleD=poleD)
+    CSV.write(pathVID * name_vid * outfile * ".csv", df)
+
+    println("Processing completed in $(round(time() - time_start; digits=2)) seconds.")
+end
+
+# ---- Run Everything ----
+analyze_video()
