@@ -53,17 +53,12 @@ function analyze_ellipse_and_major_axis(img)
     is_major_a = a > b
     major_axis_length = 2 * (is_major_a ? a : b)
     minor_axis_length = 2 * (is_major_a ? b : a)
-    
-    # Equation for lines deviding the ellipse into equal areas.
-    θ = atan(minor_axis_length, major_axis_length)
-    m1, m2 = tan(-θ), tan(θ)
-    b1, b2 = y0 - m1 * x0, y0 - m2 * x0
 
     return (
         x0=x0,
         y0=y0,
         a=major_axis_length,
         b=minor_axis_length,
-        theta=θ
+        theta=theta
         )
 end

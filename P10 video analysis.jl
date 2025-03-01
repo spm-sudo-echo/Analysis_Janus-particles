@@ -10,7 +10,6 @@ outfile = "testttt..equators_ellipse21_v3"
 x_min, x_max = 360, 980
 y_min, y_max = 750, 925
 
-
 # ---- Utility Function to Create Masks ----
 function create_ellipse_masks(img_size,x0,y0,a,b,theta)
     θ = atan(b, a)
