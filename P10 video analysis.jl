@@ -4,7 +4,7 @@ include("ellipse_detection.jl")
 pathi = raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\Experiments\2024\12.December\05\exp1\\"
 name_vid = "VID001"
 pathVID = pathi * name_vid * ".avi"
-outfile = "testttt..equators_ellipse21_v2"
+outfile = "testttt..equators_ellipse21_v3"
 
 # ---- Crop Region and Ellipse Parameters ----
 x_min, x_max = 360, 980
