@@ -1,10 +1,11 @@
-using Images, VideoIO, DataFrames, CSV, ImageShow, Statistics, ColorTypes, ImageSegmentation, CoordinateTransformations, Optim, LinearAlgebra, ImageView
+using Images, VideoIO, DataFrames, CSV, ImageShow, Statistics, ColorTypes, ImageSegmentation, CoordinateTransformations, Optim, LinearAlgebra, ImageView, Plots
 include("ellipse_detection.jl")
 # ---- Configuration ----
 pathi = raw"C:\Users\j.sharma\OneDrive - Scuola Superiore Sant'Anna\P10 Microfabrication\Experiments\2024\12.December\05\exp1\\"
 name_vid = "VID001"
 pathVID = pathi * name_vid * ".avi"
-outfile = "testttt..equators_ellipse21_v3"
+outfile = "data_ellipse21_v5"
+framerate= 12
 
 # ---- Crop Region and Ellipse Parameters ----
 x_min, x_max = 360, 980
@@ -88,7 +89,7 @@ function analyze_video()
 
     # Process all frames
     frame_count = 0
-    number, peqL, peqR, poleU, poleD = Int[], Int[], Int[], Int[], Int[]
+    number, peqL, peqR, poleU, poleD, pdiff, peq, pole= Int[], Int[], Int[], Int[], Int[], Int[], Int[], Int[]
 
     for frame in vid
         frame_count += 1
@@ -99,12 +100,21 @@ function analyze_video()
         push!(peqR, countR)
         push!(poleU, countU)
         push!(poleD, countD)
+        push!(pdiff, countL + countR - countU - countD)
+        push!(peq, countL + countR) 
+        push!(pole, countU + countD)
     end
-
+    
     # Save results to CSV
-    df = DataFrame(frame=number, peqL=peqL, peqR=peqR, poleU=poleU, poleD=poleD)
+    df = DataFrame(frame=number./framerate, peqL=peqL, peqR=peqR, poleU=poleU, poleD=poleD, pdiff= pdiff, peq=peq, pole=pole)
     CSV.write(pathVID * name_vid * outfile * ".csv", df)
 
+    p1= plot(df.frame, df.pdiff,seriestype=:line,linewidth=4.0,linecolor=:red, legend=false, xlabel="Time (s)", ylabel="Difference in no. of balck pixels")
+    savefig(p1, pathVID * name_vid * outfile * "_pdiff.png")
+    p2= plot(df.frame, df.peq, seriestype=:line,linewidth=4.0,linecolor=:red,legand=false,xlabel="Time (s)", ylabel="No.pixels (equators) ")
+    p3= plot(df.frame, df.pole, seriestype=:line,linewidth=4.0,linecolor=:red,legand=false, xlabel="Time (s)", ylabel="No. pixels (poles)")
+    k= plot(p2,p3,layout=(2,1),legend=false)
+    savefig(k, pathVID * name_vid * outfile * "_peq_pole.png")
     println("Processing completed in $(round(time() - time_start; digits=2)) seconds.")
 end
 
