@@ -65,6 +65,9 @@ end
 a = 2.0  # semi-major axis
 b = 1.0  # semi-minor axis
 phi1 = find_phi1(a, b)
+th=atan(b*tan(phi1),a)
+println("theta (radians) = $th")
+println("theta (degrees) = $(rad2deg(th))")
 
 # Optional: Plot the function to visualize the root
 alpha_range = 0.0:0.01:pi/2
