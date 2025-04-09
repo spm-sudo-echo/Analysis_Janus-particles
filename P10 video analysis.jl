@@ -115,7 +115,7 @@ function analyze_video()
     p3= plot(df.frame, df.pole, seriestype=:line,linewidth=4.0,linecolor=:red,legand=false, xlabel="Time (s)", ylabel="No. pixels (poles)")
     k= plot(p2,p3,layout=(2,1),legend=false)
     savefig(k, pathVID * name_vid * outfile * "_peq_pole.png")
-    println("Processing completed in $(round(time() - time_start; digits=2)) seconds.")
+    # println("Processing completed in $(round(time() - time_start; digits=2)) seconds.")
 end
 
 # ---- Run Everything ----
