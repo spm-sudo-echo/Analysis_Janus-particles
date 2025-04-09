@@ -25,9 +25,11 @@ mask_y_end=1500
 # mask=falses(pixel_y,pixel_x)       # values in pixels 
 # mask[mask_y_start:mask_y_end,mask_x_start:mask_x_end].=true
 mask=trues(pixel_y,pixel_x)  
+# This loop runs for multiple videos provided they are in the same folder and have the same magnification
 
+for i in 1:1
 #Path naming for file storage
-filename="VID014"   # name of the video to be tracked
+filename="VID00$i"   # name of the video to be tracked
 pathORIG="C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\11.November\\18\\exp2\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
@@ -63,7 +65,7 @@ track_particles(framerate,filename,pathDEST,mask,vid)
 #folder input corresponnds to pathDEST
 println("Calculating MSD.")
 mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
-
+end
 #fitting_linear(pathDEST,filename,diamPart)
 
 # filenome="VID001"   # name of the video to be tracked
