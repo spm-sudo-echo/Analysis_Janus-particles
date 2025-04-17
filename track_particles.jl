@@ -21,7 +21,7 @@ function track_particles(framerate,filename,pathDEST,mask,vid)
       storage .= abs.(1 .- img)  # You can save some computation by not calculating a new background image every sample
     end
 
-    bt = BlobTracker(6:8, # array of blob sizes we want to detect
+    bt = BlobTracker(5:8, # array of blob sizes we want to detect
                     3.0, # σw Dynamics noise std. (kalman filter param), increase for faster and noisy blobs
                     10.0,  # σe Measurement noise std. (pixels) (kalman filter param), increase for blurry images
                 mask=mask, # image processing before the detection
