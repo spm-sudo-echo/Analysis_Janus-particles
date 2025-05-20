@@ -14,12 +14,12 @@ include("velocity_cal.jl")
 #for i in 2:2
 #Varaibales for Analysis
 diamPart= 1.3  # mean diameter of the particles to be tracked, in microns
-um_px =  50/316 # for 1000x#50/255 for 800x  #100/382 for 600x         # micron to pixel convertion for Hirox microscope 
+um_px =  50/255  # for 1000x#50/255 for 800x  #100/382 for 600x         # micron to pixel convertion for Hirox microscope 
 framerate = 25         # fps of the video in analysis
 pixel_x=2040   
 pixel_y=1530
 start_time=time()
-testing in process
+
 # mask_x_start=502
 # mask_x_end=2000
 
@@ -31,8 +31,8 @@ mask=trues(pixel_y,pixel_x)
 
 #Path naming for file storage
 
-filename="VID001"   # name of the video to be tracked
-pathORIG="C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\03.March\\27032025\\PDA_Pd_0%\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
+filename="VID010"   # name of the video to be tracked
+pathORIG="C:\\Users\\o.tricinci\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - P19\\19052025\\PDA_pt2.5%\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
