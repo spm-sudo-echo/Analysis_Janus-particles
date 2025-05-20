@@ -19,6 +19,7 @@ framerate = 25         # fps of the video in analysis
 pixel_x=2040   
 pixel_y=1530
 start_time=time()
+testing in process
 # mask_x_start=502
 # mask_x_end=2000
 
