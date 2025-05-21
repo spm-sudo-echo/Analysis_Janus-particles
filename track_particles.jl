@@ -18,7 +18,7 @@ function track_particles(framerate,filename,pathDEST,mask,vid)
     # threshold_value = otsu_threshold(background_subtracted)
     # binary_img = background_subtracted.>threshold_value
         #update!(medbg, storage) # update the background model
-        @show storage .= abs.(1 .- img)  # You can save some computation by not calculating a new background image every sample
+        storage .= abs.(1 .- img)  # You can save some computation by not calculating a new background image every sample
     end
 
     bt = BlobTracker(6:8, # array of blob sizes we want to detect
