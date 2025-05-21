@@ -1,4 +1,6 @@
- 
+
+
+
 function mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 include("drift_corr.jl")
 include("mean_sqr_disp_cal.jl")
@@ -10,7 +12,6 @@ df[!,:BlobID] = convert.(Int64,df[!,:BlobID]);
 df[!,:Frame] = round.(Int64,df[:,:Time]./df[1,:Time])
 df[!,:x] = df[!,:x]*um_px
 df[!,:y] = df[!,:y]*um_px
-
 
 ##--- Rendering of the plots -------------------------
 boxtrack=20    # Max X & Y in the box plots 
