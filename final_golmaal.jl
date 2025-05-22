@@ -31,8 +31,8 @@ mask=trues(pixel_y,pixel_x)
 
 #Path naming for file storage
 
-filename="VID010"   # name of the video to be tracked
-pathORIG="C:\\Users\\o.tricinci\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - P19\\19052025\\PDA_pt2.5%\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
+filename="VID002"   # name of the video to be tracked
+pathORIG=raw"C:\Users\o.tricinci\Scuola Superiore Sant'Anna\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\Data\HRX_Hirox-microscope\P19\19052025\PDA_pt10%\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
@@ -50,9 +50,12 @@ imshow(img)
 # #Cropping video temporally
 # println("Cropping the video to the desired limits.")
 # #start_frame=1*framerate
-# start_frame=1 #*framerate
-# #end_frame=size(collect(vid),1)
-# end_frame= 10#2*framerate
+
+
+ 
+# start_frame=1*framerate
+# # #end_frame=size(collect(vid),1)
+# end_frame= 10*framerate
 # crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
 # vid_crop=crop_vid
 # VideoIO.close(vid)
@@ -78,6 +81,6 @@ mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 # #folder input corresponnds to pathDEST
 
 # mean_sqr_disp(pathDEST,filenome,framerate,um_px,diamPart)
-# velocity_cal(pathDEST,filenome,diamPart)
+velocity_cal(pathDEST,filename,diamPart)
 end_time=time()
 println("Analysis time: ", end_time-start_time)

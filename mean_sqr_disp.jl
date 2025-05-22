@@ -63,7 +63,7 @@ display(graphSDtrck)
 graphsingMSD=plot()
 matrMSD=fill(NaN, tauMax+1, length(idx))
 drift_part_neglect=fill(0.0,tauMax+1,1)
-lim_factor=2
+lim_factor=0
 
 xMSD=Array(0:1/framerate:tauMax/framerate)
 
