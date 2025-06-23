@@ -36,13 +36,17 @@ model(y,p)= p[1].*y.+p[2].*(0.25.*y.*y)
 fit = LsqFit.curve_fit(model,tdata,ydata,px)
 param = fit.param
 
-velocity= sqrt(param[2])
+velocity= sqrt(abs(param[2])) # velocity in um/s
 
 push!(index,k)
 push!(vel,velocity)
+
+
 end
 
 velocity_single_df=DataFrame(particle=index, velocity=vel)
+p1=histogram(vel,xlabel="velocity(um/s)",ylabel="no. of particles",bins=0:0.5:15,ylims= (0,15), xtickfont=font(12), ytickfont=font(12),color= :lightblue, legend= false)
+savefig(p1, pathDEST*"\\all_velocity_"*filenome*".png")
 CSV.write(fv, velocity_single_df)
 end
 ############################################ following commands arw for printing MSD_individual_particles and their fit##########################################

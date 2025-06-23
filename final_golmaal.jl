@@ -72,15 +72,16 @@ mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 #end
 #fitting_linear(pathDEST,filename,diamPart)
 
-# filenome="VID001"   # name of the video to be tracked
-# framerate = 25          # fps of the video in analysis
-# um_px=50/316 
-# diamPart=3  # mean diameter of the particles to be tracked, in microns
-# pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\11.November\\18\\exp1\\analysis_VID001_2024.11.19_13.42.52\\"
-# #folder input corresponnds to pathDEST
 
 # mean_sqr_disp(pathDEST,filenome,framerate,um_px,diamPart)
 velocity_cal(pathDEST,filename,diamPart)
 end_time=time()
 println("Analysis time: ", end_time-start_time)
 end
+
+#pathDEST= raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\Data\HRX_Hirox-microscope\P19\19052025\PDA_pt2.5%\analysis_VID010_2025.05.21_11.29.30\\"
+#framerate = 25          # fps of the video in analysis
+#filename=   "VID010"   # name of the video to be tracked
+#um_px=50/316 
+#diamPart=1.3# mean diameter of the particles to be tracked, in microns
+#velocity_cal(pathDEST,filename,diamPart)
