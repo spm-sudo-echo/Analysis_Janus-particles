@@ -35,7 +35,7 @@ start_time=time()
 
 #Path naming for file storage
 
-filename="VID002"   # name of the video to be tracked
+filename="VID00$i"   # name of the video to be tracked
 pathORIG="C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\19052025\\PDA_pt_0%\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
@@ -83,7 +83,5 @@ end
 # pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\11.November\\18\\exp1\\analysis_VID001_2024.11.19_13.42.52\\"
 # #folder input corresponnds to pathDEST
 # mean_sqr_disp(pathDEST,filenome,framerate,um_px,diamPart)
-velocity_cal(pathDEST,filename,diamPart)
-end_time=time()
-println("Analysis time: ", end_time-start_time)
-end
+#velocity_cal(pathDEST,filename,diamPart)
+
