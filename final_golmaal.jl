@@ -13,6 +13,10 @@ include("save_data.jl")
 include("drift_corr.jl")
 start_time=time()
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
+folder_path= ["C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\19052025\\PDA_pt_01\\",
+"C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\19052025\\PDA_pt_02\\",
+"C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\19052025\\PDA_pt_03\\"]
+
 
 #Varaibales for Analysis
 diamPart= 1.3  # mean diameter of the particles to be tracked, in microns
@@ -21,9 +25,9 @@ framerate = 25         # fps of the video in analysis
 pixel_x=2040   
 pixel_y=1530
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
-for i in 2:2
+for folder in folder_path
+    for i in 3:3
 
-start_time=time()
 # mask_x_start=502
 # mask_x_end=2000
 
@@ -35,8 +39,9 @@ start_time=time()
 
 #Path naming for file storage
 
-filename="VID00$i"   # name of the video to be tracked
-pathORIG="C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\19052025\\PDA_pt_0%\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
+filename="VID00$i"
+pathORIG=folder   # name of the video to be tracked
+#pathORIG="C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\19052025\\PDA_pt_0%\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
@@ -73,6 +78,7 @@ println("Calculating MSD.")
 mean_sqr_disp(pathDEST,filename,framerate,um_px,diamPart)
 end_time=time()
 println("Analysis time: ", end_time-start_time)
+end
 end
 #fitting_linear(pathDEST,filename,diamPart)
 
