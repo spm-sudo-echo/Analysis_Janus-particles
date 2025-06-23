@@ -14,24 +14,27 @@ start_time=time()
 for i in 1:5
 #Varaibales for Analysis
 diamPart= 1.3  # mean diameter of the particles to be tracked, in microns
-um_px =  50/316 # for 1000x#50/255 for 800x  #100/382 for 600x         # micron to pixel convertion for Hirox microscope 
+um_px =  50/255  # for 1000x#50/255 for 800x  #100/382 for 600x         # micron to pixel convertion for Hirox microscope 
 framerate = 25         # fps of the video in analysis
 pixel_x=2040   
 pixel_y=1530
+# This loop runs for multiple videos provided they are in the same folder and have the same magnification
+for i in 1:1
 
+start_time=time()
 # mask_x_start=502
 # mask_x_end=2000
 
 # mask_y_start=800
 # mask_y_end=1500
-# mask=falses(pixel_y,pixel_x)       # values in pixels 
+#  mask=falses(pixel_y,pixel_x)       # values in pixels 
 # mask[mask_y_start:mask_y_end,mask_x_start:mask_x_end].=true
-mask=trues(pixel_y,pixel_x)  
+ mask=trues(pixel_y,pixel_x)  
 
 #Path naming for file storage
 
-filename="VID00$i"   # name of the video to be tracked
-pathORIG="C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\03.March\\27032025\\PDA_Pd_15%\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
+filename="VID001"   # name of the video to be tracked
+pathORIG="C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\03.March\\27032025\\PDA_Pd_0%\\"   # path of the folder containing the video to be tracked""C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\"   # path of the folder containing the video to be tracked
 folderDEST="analysis_"*filename   # name of the folder where to store the result of the tracking
 pathDEST=pathORIG*folderDEST   # path of the folder where to store the result of the tracking
 datestamp=Dates.format(now(),"YYYY.mm.dd_HH.MM.SS")  # todays date
@@ -39,7 +42,7 @@ pathDEST=pathDEST*"_"*datestamp
 mkdir(pathDEST)
 
 println("Reading the desired video.")
-pathVID=pathORIG*filename*".wmv"
+pathVID=pathORIG*filename*".wmv"   # path of the video to be tracked
 io   = VideoIO.open(pathVID)
 vid  = VideoIO.openvideo(io)
 #video_frames = VideoIO.load(pathVID)
@@ -77,6 +80,7 @@ end
 # #folder input corresponnds to pathDEST
 
 # mean_sqr_disp(pathDEST,filenome,framerate,um_px,diamPart)
-# velocity_cal(pathDEST,filenome,diamPart)
+velocity_cal(pathDEST,filename,diamPart)
 end_time=time()
 println("Analysis time: ", end_time-start_time)
+end
