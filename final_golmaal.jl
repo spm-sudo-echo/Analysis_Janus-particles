@@ -8,14 +8,14 @@ gr()
 include("track_particles.jl")
 include("temporal_crop_video.jl")
 include("mean_sqr_disp.jl")
+include("mean_sqr_disp_cal.jl")
 include("velocity_cal.jl")
 include("save_data.jl")
 include("drift_corr.jl")
 start_time=time()
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
-folder_path= ["C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\19052025\\PDA_pt_01\\",
-"C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\19052025\\PDA_pt_02\\",
-"C:\\Users\\j.sharma\\Scuola Superiore Sant'Anna\\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\\Data\\HRX_Hirox-microscope\\P19\\19052025\\PDA_pt_03\\"]
+folder_path= [raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\Data\HRX_Hirox-microscope\P19\19052025\PDA_pt0%\\",
+raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\Data\HRX_Hirox-microscope\P19\19052025\PDA_pt2.5%\\"]
 
 
 #Varaibales for Analysis
@@ -26,6 +26,7 @@ pixel_x=2040
 pixel_y=1530
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
 for folder in folder_path
+    println(folder)
     for i in 3:3
 
 # mask_x_start=502
@@ -58,20 +59,15 @@ img= first(vid)# video_frames[70]
 imshow(img)
 # #Cropping video temporally
 # println("Cropping the video to the desired limits.")
-#start_frame=1*framerate
+start_frame=1*framerate
 # start_frame=1 #*framerate
 # #end_frame=size(collect(vid),1)
-#end_frame= 2*framerate
-#crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
-#vid_crop=crop_vid
+end_frame= 2*framerate
+crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
+vid_crop=crop_vid
 # VideoIO.close(vid)
-
-#track particle call
 println("Tracking the particles.")
-track_particles(framerate,filename,pathDEST,mask,vid)
-
-#mean_sqr_disp.jl variables
-
+track_particles(framerate,filename,pathDEST,mask,vid_crop)
 #pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\analysis_VID005_2024.05.10_15.50.10\\"
 #folder input corresponnds to pathDEST
 println("Calculating MSD.")
