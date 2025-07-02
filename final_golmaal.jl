@@ -14,8 +14,7 @@ include("save_data.jl")
 include("drift_corr.jl")
 start_time=time()
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
-folder_path= [raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\Data\HRX_Hirox-microscope\P19\19052025\PDA_pt0%\\",
-raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\Data\HRX_Hirox-microscope\P19\19052025\PDA_pt2.5%\\"]
+folder_path= [raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\Data\HRX_Hirox-microscope\P19\19052025\PDA_pt15%\\"]   
 
 
 #Varaibales for Analysis
@@ -27,7 +26,7 @@ pixel_y=1530
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
 for folder in folder_path
     println(folder)
-    for i in 3:3
+    for i in 2:5
 
 # mask_x_start=502
 # mask_x_end=2000
@@ -59,15 +58,15 @@ img= first(vid)# video_frames[70]
 imshow(img)
 # #Cropping video temporally
 # println("Cropping the video to the desired limits.")
-start_frame=1*framerate
+#start_frame=1*framerate
 # start_frame=1 #*framerate
 # #end_frame=size(collect(vid),1)
-end_frame= 2*framerate
-crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
-vid_crop=crop_vid
+#end_frame= 2*framerate
+#crop_vid = temporal_crop_video(vid,framerate,start_frame,end_frame,filename,pathDEST) 
+   #vid_crop=crop_vid
 # VideoIO.close(vid)
 println("Tracking the particles.")
-track_particles(framerate,filename,pathDEST,mask,vid_crop)
+track_particles(framerate,filename,pathDEST,mask,vid)
 #pathDEST= "C:\\Users\\j.sharma\\OneDrive - Scuola Superiore Sant'Anna\\P10 Microfabrication\\Experiments\\2024\\05.May\\07\\exp1\\analysis_VID005_2024.05.10_15.50.10\\"
 #folder input corresponnds to pathDEST
 println("Calculating MSD.")
