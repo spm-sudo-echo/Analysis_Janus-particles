@@ -29,7 +29,7 @@ function track_particles(framerate,filename,pathDEST,mask,vid)
                  
 
                   
-                    amplitude_th = 0.01, # with less, like 0.007, it may detects false positives
+                    amplitude_th = 0.005, # with less, like 0.007, it may detects false positives
                     correspondence = HungarianCorrespondence(p=1.0, dist_th=1), # dist_th is the number of sigmas away from a predicted location a measurement is accepted.
     )
 
@@ -43,8 +43,8 @@ function track_particles(framerate,filename,pathDEST,mask,vid)
 
     ##--- Plots trajectories and start-end points for each blob ---
 
-    traces = trace(result, minlife=15) # Filter minimum lifetime of 15
-    measurement_traces = tracem(result, minlife=5)
+    traces = trace(result, minlife=1) # Filter minimum lifetime of 15
+    measurement_traces = tracem(result, minlife=1)
     vid_super=pathDEST*"\\tracked_vid_"*filename*".mp4"
 
     totf=VideoIO.counttotalframes(vid)

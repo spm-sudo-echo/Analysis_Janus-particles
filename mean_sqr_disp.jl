@@ -107,7 +107,7 @@ end
 
 ##---Calculating the total and active particles
 ap=length(par_idx)
-tp=length(idx)
+tp=length(unique(df[!,:BlobID])) # this is total particles detected even if they are stuck
 
 #MSD=vec(nanmean(matrMSD, dims=2))    #mean of MSD, so average plot
 #dsMSD=vec(nanstd(matrMSD; dims=2))

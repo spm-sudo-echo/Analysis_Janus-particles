@@ -2,9 +2,9 @@
 #The aim is to have one script that includes all the input variables and path definitions.
 
 using Images, VideoIO, ImageView, FileIO, CSV, DataFrames, Dates, StatsPlots, CategoricalArrays, Plots, NaNStatistics, LsqFit, Statistics, JSON3, FFMPEG, BlobTracking
-
 gr()  
 
+#BlobTracking.PROGRESS[1] = false
 include("track_particles.jl")
 include("temporal_crop_video.jl")
 include("mean_sqr_disp.jl")
@@ -14,19 +14,19 @@ include("save_data.jl")
 include("drift_corr.jl")
 start_time=time()
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
-folder_path= [raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Microscale Robotics Laboratory - DATA_2025 - DATA_2025\Data\HRX_Hirox-microscope\P19\19052025\PDA_pt15%\\"]   
+folder_path= [raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Yashpal Singh Brar - 2025\10\24\SMC1\2.5\\"]   
 
 
 #Varaibales for Analysis
-diamPart= 1.3  # mean diameter of the particles to be tracked, in microns
-um_px =  50/255  # for 1000x#50/255 for 800x  #100/382 for 600x         # micron to pixel convertion for Hirox microscope 
+diamPart= 3.0  # mean diameter of the particles to be tracked, in microns
+um_px =  100/382  # 50/316 for 1000x #50/255 for 800x  #100/382 for 600x #100/251 for 400x         # micron to pixel convertion for Hirox microscope 
 framerate = 25         # fps of the video in analysis
 pixel_x=2040   
 pixel_y=1530
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
 for folder in folder_path
     println(folder)
-    for i in 2:5
+    for i in 1:4
 
 # mask_x_start=502
 # mask_x_end=2000
