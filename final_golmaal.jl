@@ -29,6 +29,7 @@ for folder in folder_path
     for i in 1:4
 
 # mask_x_start=502
+
 # mask_x_end=2000
 
 # mask_y_start=800

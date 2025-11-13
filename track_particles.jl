@@ -43,8 +43,8 @@ function track_particles(framerate,filename,pathDEST,mask,vid)
 
     ##--- Plots trajectories and start-end points for each blob ---
 
-    traces = trace(result, minlife=1) # Filter minimum lifetime of 15
-    measurement_traces = tracem(result, minlife=1)
+    traces = trace(result, minlife=5) # Filter minimum lifetime of 15
+    measurement_traces = tracem(result, minlife=5)
     vid_super=pathDEST*"\\tracked_vid_"*filename*".mp4"
 
     totf=VideoIO.counttotalframes(vid)
