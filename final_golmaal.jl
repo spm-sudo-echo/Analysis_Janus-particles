@@ -14,7 +14,7 @@ include("save_data.jl")
 include("drift_corr.jl")
 start_time=time()
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
-folder_path= [raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Yashpal Singh Brar - 2025\11\13\SM4.0\exp1\\"]   
+folder_path= [raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Yashpal Singh Brar - 2025\11\13\SMC\exp1\\"]   
 
 #Varaibales for Analysis
 diamPart= 3.0  # mean diameter of the particles to be tracked, in microns
@@ -25,7 +25,7 @@ pixel_y=764
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
 for folder in folder_path
     println(folder)
-    for i in 2:9
+    for i in 2:5
 
 # mask_x_start=502
 
