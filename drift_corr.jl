@@ -39,7 +39,7 @@ function drift_correct(df, um_px, framerate, filename, pathDEST)
         end
     end
 
-    # find too-short tracks
+    # find too-short tracks, shoter than 1 s are discarded here
     short_tracks = Int[]
     for g in gdf
         if nrow(g) < min_duration_frame
@@ -81,7 +81,7 @@ function drift_correct(df, um_px, framerate, filename, pathDEST)
     end
 
     # calculate global displacement between frames
-    dp = [nanmean(diff(pi,dims=1),dims=2) for pi in p]
+    dp = [nanmean(diff(pi,dims=1),dims=2) for pi in p] #displcament for each frame and later averaged on all frames
     # plot(dp[1]); plot!(dp[2])
 
     # calculate drift
@@ -115,9 +115,11 @@ function drift_correct(df, um_px, framerate, filename, pathDEST)
         plot!(plt_tracks,g[:,:x],g[:,:y],legend=:none,color=:red)
     end
     display(plt_tracks)
-    
+    #Now you see: black → raw, green → filtered, red → drift-corrected.
     #---SAVE dataframe with drift correction & Plot-----------
-    CSV.write(pathDEST*"\\MSDdriftCorr_"*filename*".csv", df)
+    df_corr = vcat(gdf_clean_corrected...)   # flatten back to a single DataFrame
+CSV.write(pathDEST*"\\MSDdriftCorr_"*filename*".csv", df_corr)
+   
     png(plt_tracks, pathDEST*"\\tracks_dc_"*filename)
 
     return gdf_clean_corrected, immobile_tracks, jump_tracks, short_tracks, discard_tracks

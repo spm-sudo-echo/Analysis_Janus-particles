@@ -27,10 +27,10 @@ tr=(Dr)^(-1)                                              # Rotational time scal
 ##--- Return gdf_clean_corrected, immobile_tracks, jump_tracks, short_tracks, discard_tracks ---
 gdf_clean_corrected, immobile_tracks, jump_tracks, short_tracks, discard_tracks = drift_correct(df,um_px,framerate,filename,pathDEST)
 
-##--- Calculate number of detected traks -------------
+##--- Calculate number of detectedcleaned  traks -------------
 nTraks=length(gdf_clean_corrected)
 ##--- Find Max length of time vector -----------------
-lt = maximum([size(g)[1] for g in gdf_clean_corrected])
+lt = maximum([size(g)[1] for g in gdf_clean_corrected]) # maximum track length and in a sense is equal to number of frames
 tauMax=ceil(Int,lt/10) # Decide the time interval (ceil is the excess approximation, floor for defect one)
 
 
