@@ -14,18 +14,18 @@ include("save_data.jl")
 include("drift_corr.jl")
 start_time=time()
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
-folder_path= [raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Yashpal Singh Brar - 2025\11\13\SMC\exp1\\"]   
+folder_path= [raw"C:\Users\y.brar\OneDrive - Scuola Superiore Sant'Anna\Work\Yashpal\2025\11\19\Control\exp3\\"]   
 
 #Varaibales for Analysis
 diamPart= 3.0  # mean diameter of the particles to be tracked, in microns
-um_px =  100/191  # 50/316 for 1000x #50/255 for 800x  #100/382 for 600x #100/251 for 400x         # micron to pixel convertion for Hirox microscope 
+um_px =  100/382  # 50/316 for 1000x #50/255 for 800x  #100/382 for 600x #100/251 for 400x         # micron to pixel convertion for Hirox microscope 
 framerate = 25         # fps of the video in analysis
-pixel_x=1020   
-pixel_y=764
+pixel_x=2040  
+pixel_y=1530
 # This loop runs for multiple videos provided they are in the same folder and have the same magnification
 for folder in folder_path
     println(folder)
-    for i in 2:5
+    for i in 2:2
 
 # mask_x_start=502
 
