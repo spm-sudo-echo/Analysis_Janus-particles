@@ -1,4 +1,4 @@
-function track_particles(framerate, filename, pathDEST, mask, vid)
+function track_particles(framerate, filename, pathDEST, mask, vid,  um_px, diamPart)
     img = first(vid)
     
     ##--- Creates a blob tracker with the desired parameters ---
@@ -8,7 +8,19 @@ function track_particles(framerate, filename, pathDEST, mask, vid)
         storage .= abs.(1 .- img)  # Invert; adjust if background is dark
     end
 
-    bt = BlobTracker(5:20, # array of blob sizes we want to detect
+    # ADDED: Compute dynamic blob size range based on um_px and diamPart
+    pixel_diam = diamPart / um_px  # Expected diameter in pixels
+    min_factor = 0.8  # Adjust lower bound (e.g., 0.7 for smaller variations)
+    max_factor = 1.2  # Adjust upper bound (e.g., 1.1 to ignore doublets more strictly)
+    min_size = max(5, floor(Int, pixel_diam * min_factor))  # Ensure minimum reasonable size
+    max_size = ceil(Int, pixel_diam * max_factor)
+    if max_size - min_size < 3  # Ensure a minimum range width
+        max_size = min_size + 4
+    end
+    blob_range = min_size:max_size
+    println("Computed blob size range: $blob_range (based on pixel_diam ≈ $(round(pixel_diam, digits=2)))")  # For debugging
+
+    bt = BlobTracker(blob_range, # array of blob sizes we want to detect
                      3.0, # σw Dynamics noise std. (kalman filter param), increase for faster and noisy blobs
                      10.0,  # σe Measurement noise std. (pixels) (kalman filter param), increase for blurry images
                      mask = mask, # image processing before the detection

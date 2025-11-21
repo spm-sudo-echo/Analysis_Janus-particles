@@ -15,6 +15,8 @@
 # 2. Search for julia.NumThreads
 # 3. Click on Edit in settings.json
 # 4. Add "julia.NumThreads": "auto"  # or set a specific number like "4"
+# 5. Save and restart VS Code.
+# 6. Run your script by executing active Julia file in REPL (or hitting the play button).
 
 # Check the number of threads in Julia with:
 # Threds.nthreads()
@@ -76,7 +78,7 @@ for folder in folder_path
         #vid = crop_vid  # Replace original vid with cropped
 
         println("Tracking the particles.")
-        track_particles(framerate, filename, pathDEST, mask, vid)
+        track_particles(framerate, filename, pathDEST, mask, vid, um_px, diamPart)
         println("Calculating MSD.")
         mean_sqr_disp(pathDEST, filename, framerate, um_px, diamPart)
         end_time = time()
