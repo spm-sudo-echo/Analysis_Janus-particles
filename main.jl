@@ -22,8 +22,6 @@
 # Threds.nthreads()
 #########################################################################################
 
-#Test commit for GitHub
-
 # This is the end script that incorporates the call to track_particles.jl and MSD_singVid.jl.
 # The aim is to have one script that includes all the input variables and path definitions.
 

@@ -64,7 +64,7 @@ function drift_correct(df, um_px, framerate, filename, pathDEST)
     # calculate drift
     # ===
     n_tracks = length(gdf)
-    n_frames = maximum(nrow(g) for g in gdf) 
+    n_frames = maximum(nrow(g) for g in gdf) #not actual number of frames, but max frame index i.e. the longest individual track.
 
     # put good tracks in matrix
     x_m, y_m = fill(NaN, n_frames, n_tracks), fill(NaN, n_frames, n_tracks)
