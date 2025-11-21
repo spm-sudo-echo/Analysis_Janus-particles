@@ -1,3 +1,26 @@
+##########################################################################################
+# For a FASTER run of the code, use more threads in Julia by starting Julia with the command:
+# 1. Open Command Prompt or PowerShell.
+# 2. Run: set JULIA_NUM_THREADS=4 (temporary for the session).
+# 3. For persistence, go to System Properties > Advanced > Environment Variables, and add a new user/system variable.
+# 4. Then launch: julia your_script.jl
+# 5. In PowerShell, you can chain: $env:JULIA_NUM_THREADS=4; julia your_script.jl
+
+# or alternatively you can start Julia with the command:
+# julia -t 4 your_script.jl
+# or julia -t auto your_script.jl to use all avialable threads.
+
+# or alternatively, as I am using VS Code as IDE, you can set the number of threads in the settings:
+# 1. Go to settings
+# 2. Search for julia.NumThreads
+# 3. Click on Edit in settings.json
+# 4. Add "julia.NumThreads": "auto"  # or set a specific number like "4"
+
+# Check the number of threads in Julia with:
+# Threds.nthreads()
+#########################################################################################
+
+
 # This is the end script that incorporates the call to track_particles.jl and MSD_singVid.jl.
 # The aim is to have one script that includes all the input variables and path definitions.
 
@@ -26,6 +49,8 @@ for folder in folder_path
     println(folder)
     for i in 3:3
         mask = trues(pixel_y, pixel_x)  
+
+        println("Number of threads: ", Threads.nthreads())
 
         # Path naming for file storage
         filename = "VID00$i"

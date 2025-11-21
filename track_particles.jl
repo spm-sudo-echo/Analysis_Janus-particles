@@ -19,7 +19,10 @@ function track_particles(framerate, filename, pathDEST, mask, vid)
 
     result = track_blobs(bt, vid,
                          display = nothing, # Use Base.display if visualization needed during tracking
-                         recorder = Recorder(),) # Records result; specify path if needed to save during tracking
+                         recorder=nothing,  # No recording (add Recorder if needed, but it adds overhead)
+                         threads=true,  # Enable multi-threading (start Julia with multiple threads)
+                         ignoreempty=true  # Skip processing empty frames
+    )
 
     ##--- Plots trajectories and start-end points for each blob ---
     traces = trace(result, minlife=5) # Filter minimum lifetime of 5 frames
