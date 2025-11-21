@@ -1,31 +1,29 @@
-
-
 function drift_correct(df, um_px, framerate, filename, pathDEST)
     
     # derived information:
-    px_um = 1/um_px     # pixel / micron
+    px_um = 1 / um_px     # pixel / micron
     max_act_vel = 100   # micron / s
     max_disp_frame = max_act_vel / framerate
     min_duration_s = 1.0 # minimum track length, s
-    min_duration_frame = floor(Int,min_duration_s*framerate)
+    min_duration_frame = floor(Int, min_duration_s * framerate)
     Δt_drift = 10 #s
 
     # group and plot tracks
-    gdf = groupby(df,:BlobID)
+    gdf = groupby(df, :BlobID)
 
-    plt_tracks=plot()
+    plt_tracks = plot()
     for g in gdf
-        plot!(g[:,:x],g[:,:y],legend=:none,color=:black)
+        plot!(g[:,:x], g[:,:y], legend=:none, color=:black)
     end
     xlabel!("x (μm)"); ylabel!("y (μm)")
 
     # find tracks of immobile (stuck) particles and camera artefacts
     immobile_tracks = Int[]
     for g in gdf
-        rms_x_px = sqrt(sum((g[:,:x].-g[1,:x]).^2)/nrow(g)) * px_um
-        rms_y_px = sqrt(sum((g[:,:y].-g[1,:y]).^2)/nrow(g)) * px_um
+        rms_x_px = sqrt(sum((g[:,:x] .- g[1,:x]).^2) / nrow(g)) * px_um
+        rms_y_px = sqrt(sum((g[:,:y] .- g[1,:y]).^2) / nrow(g)) * px_um
         if rms_x_px < 1.0 && rms_y_px < 1.0
-            push!(immobile_tracks,g[1,:BlobID])
+            push!(immobile_tracks, g[1,:BlobID])
         end
     end
 
@@ -35,20 +33,20 @@ function drift_correct(df, um_px, framerate, filename, pathDEST)
         dr = sqrt.(diff(g[:,:x]).^2 + diff(g[:,:y]).^2)
         max_dr = maximum(dr; init=0)
         if max_dr > max_disp_frame
-            push!(jump_tracks,g[1,:BlobID])
+            push!(jump_tracks, g[1,:BlobID])
         end
     end
 
-    # find too-short tracks, shoter than 1 s are discarded here
+    # find too-short tracks, shorter than 1 s are discarded here
     short_tracks = Int[]
     for g in gdf
         if nrow(g) < min_duration_frame
-            push!(short_tracks,g[1,:BlobID])
+            push!(short_tracks, g[1,:BlobID])
         end
     end
 
     # tracks to be discarded
-    discard_tracks = unique([immobile_tracks; jump_tracks;short_tracks])
+    discard_tracks = unique([immobile_tracks; jump_tracks; short_tracks])
 
     # clean grouped DataFrame without discarded tracks and plot tracks
     gdf_clean = gdf[[g[1,:BlobID] ∉ discard_tracks for g in gdf]]
@@ -59,50 +57,46 @@ function drift_correct(df, um_px, framerate, filename, pathDEST)
     println(length(gdf_clean))
 
     for g in gdf_clean
-        plot!(plt_tracks,g[:,:x],g[:,:y],legend=:none,color=:green)
+        plot!(plt_tracks, g[:,:x], g[:,:y], legend=:none, color=:green)
     end
     display(plt_tracks)
 
     # calculate drift
     # ===
-
     n_tracks = length(gdf)
     n_frames = maximum(nrow(g) for g in gdf) 
 
     # put good tracks in matrix
-    x_m, y_m = fill(NaN,n_frames,n_tracks), fill(NaN,n_frames,n_tracks)
-    p = [x_m,y_m]
+    x_m, y_m = fill(NaN, n_frames, n_tracks), fill(NaN, n_frames, n_tracks)
+    p = [x_m, y_m]
     for g in gdf
         track = g[1,:BlobID]
         if track ∉ discard_tracks
-            x_m[(g[:,:Frame]),track]=g[:,:x] #CAMBIATO FRAME A TIME
-            y_m[(g[:,:Frame]),track]=g[:,:y] #CAMBIATO FRAME A TIME
+            x_m[g[:,:Frame], track] = g[:,:x]
+            y_m[g[:,:Frame], track] = g[:,:y]
         end
     end
 
     # calculate global displacement between frames
-    dp = [nanmean(diff(pi,dims=1),dims=2) for pi in p] #displcament for each frame and later averaged on all frames
-    # plot(dp[1]); plot!(dp[2])
+    dp = [nanmean(diff(pi, dims=1), dims=2) for pi in p] # displacement for each frame and later averaged on all frames
 
     # calculate drift
-    drift=[[0;cumsum(dpi,dims=1)] for dpi in dp]
-    plot(drift[1],label="drift x"); plot!(drift[2],label="drift y")
+    drift = [[0; cumsum(dpi, dims=1)] for dpi in dp]
+    plot(drift[1], label="drift x"); plot!(drift[2], label="drift y")
 
-    # smoothing of the drift: is that really needed
-    function mymovmean(s,w)
-        ssm = fill(NaN,size(s))
+    # smoothing of the drift
+    function mymovmean(s, w)
+        ssm = fill(NaN, size(s))
         for i in eachindex(s)
-            wi = minimum([w,2i-1,2(length(s)-i)+1])
-            ssm[i] = mean(s[i-(wi÷2):i+(wi÷2)])
+            wi = minimum([w, 2i - 1, 2(length(s) - i) + 1])
+            ssm[i] = mean(s[i - (wi ÷ 2):i + (wi ÷ 2)])
         end
         return ssm
     end
 
-    w = Δt_drift*framerate +1 -mod(Δt_drift*framerate,2) #how much the drift is changing? Calculate over Δt to smooth
-    # w = n_frames÷4+1-mod(n_frames÷4,2) #n.frames/4, but it needs to be odd
-    # w = 1
-    drift_sm = mymovmean.(drift,w)
-    plot!(drift_sm[1],label="drift x sm"); plot!(drift_sm[2],label="drift y sm")
+    w = Δt_drift * framerate + 1 - mod(Δt_drift * framerate, 2) # how much the drift is changing? Calculate over Δt to smooth
+    drift_sm = mymovmean.(drift, w)
+    plot!(drift_sm[1], label="drift x sm"); plot!(drift_sm[2], label="drift y sm")
 
     # correct drift
     gdf_clean_corrected = gdf_clean
@@ -112,15 +106,15 @@ function drift_correct(df, um_px, framerate, filename, pathDEST)
     end
 
     for g in gdf_clean_corrected
-        plot!(plt_tracks,g[:,:x],g[:,:y],legend=:none,color=:red)
+        plot!(plt_tracks, g[:,:x], g[:,:y], legend=:none, color=:red)
     end
     display(plt_tracks)
-    #Now you see: black → raw, green → filtered, red → drift-corrected.
+    # Now you see: black → raw, green → filtered, red → drift-corrected.
     #---SAVE dataframe with drift correction & Plot-----------
     df_corr = vcat(gdf_clean_corrected...)   # flatten back to a single DataFrame
-CSV.write(pathDEST*"\\MSDdriftCorr_"*filename*".csv", df_corr)
+    CSV.write(pathDEST * "\\coordinates_driftCorr_" * filename * ".csv", df_corr)  # Renamed for clarity
    
-    png(plt_tracks, pathDEST*"\\tracks_dc_"*filename)
+    png(plt_tracks, pathDEST * "\\tracks_dc_" * filename)
 
     return gdf_clean_corrected, immobile_tracks, jump_tracks, short_tracks, discard_tracks
 end
