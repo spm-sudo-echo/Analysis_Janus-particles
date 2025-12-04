@@ -2,6 +2,9 @@
 # data is generated from Python scripts of Yashpal Singh Brar and here only the analysis is done in Julia
 using DataFrames, CSV, Plots, Statistics, NaNStatistics, Distributions, HypothesisTests
 
+# Set the GR backend explicitly (to support boxplots and other series types)
+gr()
+
 # Paths and filenames for both datasets
 path_non_spaced = raw"C:\Users\j.sharma\Scuola Superiore Sant'Anna\Yashpal Singh Brar - 2025\11\19\Control\\"
 filename_non_spaced = "all_velocities_control.csv"
@@ -77,12 +80,27 @@ plot!(p_spaced, [median_spaced], [pdf(d_spaced, median_spaced + shift_spaced)], 
 display(p_spaced)
 savefig(p_spaced, path_non_spaced * "fitted_lognormal_spaced.png")  # Or use path_spaced
 
-# --- Comparison Plots ---
-# # Boxplot for raw velocities
-# plot_box = boxplot([velocities_non_spaced velocities_spaced], label=["Non-Spaced" "Spaced"],
-#                    title="Velocity Comparison", ylabel="Velocity (um/s)", legend=:topright)
-# display(plot_box)
-# savefig(plot_box, path_non_spaced * "velocity_boxplot_comparison.png")
+# --- Overlaid Histogram with Fits and Annotations ---
+# Determine common x_range for overlay
+min_vel = min(minimum(velocities_non_spaced), minimum(velocities_spaced))
+max_vel = max(maximum(velocities_non_spaced), maximum(velocities_spaced))
+x_range = range(min_vel, max_vel, length=200)
+
+# PDFs (adjusted for shifts)
+pdf_non = pdf.(d_non_spaced, x_range .+ shift_non_spaced)
+pdf_spaced = pdf.(d_spaced, x_range .+ shift_spaced)
+
+# Max PDF for annotation placement
+max_pdf = max(maximum(pdf_non), maximum(pdf_spaced))
+
+plot_hist = histogram(velocities_non_spaced, normalize=:pdf, alpha=0.5, bins=200, label="Non-Spaced",
+                     title="Velocity Distribution Comparison", xlabel="Velocity (um/s)", ylabel="Density")
+histogram!(velocities_spaced, normalize=:pdf, alpha=0.5, bins=200, label="Spaced")
+plot!(x_range, pdf_non, label="Fit Non-Spaced", color=:blue, linewidth=2)
+plot!(x_range, pdf_spaced, label="Fit Spaced", color=:red, linewidth=2)
+
+display(plot_hist)
+savefig(plot_hist, path_non_spaced * "overlaid_histogram_with_fits.png")
 
 # --- Basic Statistics for Each ---
 function compute_stats(vel)
@@ -96,7 +114,6 @@ end
 stats_non_spaced = compute_stats(velocities_non_spaced)
 stats_spaced = compute_stats(velocities_spaced)
 
-@show stats_non_spaced[4]
 println("Non-Spaced Stats: ", stats_non_spaced)
 println("Spaced Stats: ", stats_spaced)
 
@@ -118,7 +135,8 @@ println("Levene's Test p-value (log scale): $p_var")
 
 # Non-parametric: Mann-Whitney U (on original velocities; one-sided: spaced > non-spaced)
 mw_result = MannWhitneyUTest(velocities_spaced, velocities_non_spaced)
-p_mw = pvalue(mw_result, tail=:right)
+p_mw = pvalue(mw_result, tail=:right) # one sided test, right here means right value is smaller than left 
+# A greater difference between the two values corresponds to a lower p-value
 println("Mann-Whitney p-value (Spaced > Non-Spaced): $p_mw")
 if p_mw < 0.05
     println("Evidence that spaced velocities are higher.")
@@ -136,6 +154,52 @@ p_ttest = pvalue(ttest_result, tail=:right)
 println("t-Test p-value on log scale (Spaced > Non-Spaced): $p_ttest")
 
 # Cohen's d (effect size)
-pooled_sd = sqrt( ((length(velocities_spaced)-1)*stats_spaced[2] + (length(velocities_non_spaced)-1)*stats_non_spaced[2]) / (length(velocities_spaced) + length(velocities_non_spaced) - 2) )
+pooled_sd = sqrt( ((length(velocities_spaced)-1)*var(velocities_spaced) + (length(velocities_non_spaced)-1)*var(velocities_non_spaced)) / (length(velocities_spaced) + length(velocities_non_spaced) - 2) )
 cohens_d = (mean(velocities_spaced) - mean(velocities_non_spaced)) / pooled_sd
 println("Cohen's d: $cohens_d")  # Positive value indicates spaced > non-spaced
+
+# --- Comparison Boxplot with Annotations (like in biological papers) ---
+plot_box = boxplot([velocities_non_spaced, velocities_spaced], label=["Non-Spaced" "Spaced"]
+                   , ylabel="Velocity (um/s)", legend=:topright)
+
+# Determine significance stars based on p_mw (Mann-Whitney)
+if p_mw < 0.0001
+    sig = "****"
+elseif p_mw < 0.001
+    sig = "***"
+elseif p_mw < 0.01
+    sig = "**"
+elseif p_mw < 0.05
+    sig = "*"
+else
+    sig = "ns"
+end
+
+# Placement for annotations
+max_y = max(maximum(velocities_non_spaced), maximum(velocities_spaced)) * 0.51
+
+# Draw bracket: horizontal line and vertical ticks
+plot!(plot_box, [1, 2], [max_y, max_y], color=:black, linewidth=1, label="")
+plot!(plot_box, [1, 1], [max_y * 0.98, max_y], color=:black, linewidth=1, label="")
+plot!(plot_box, [2, 2], [max_y * 0.98, max_y], color=:black, linewidth=1, label="")
+
+# Annotate significance stars
+annotate!(1.5, max_y * 1.1, text(sig, :center, 10, :black))
+
+# Annotate p-value and Cohen's d below or above
+annotate!(1.5, max_y * 1.70, text("p = $(round(p_mw, sigdigits=2))", :center, 8, :black))
+annotate!(1.5, max_y * 1.55, text("Cohen's d = $(round(cohens_d, digits=2))", :center, 8, :black))
+
+display(plot_box)
+savefig(plot_box, path_non_spaced * "velocity_boxplot_comparison_annotated.png")
+
+# --- Add Annotations to Overlaid Histogram ---
+# Annotate p-value, sig, and d in top-right corner
+annot_x = 0.7 * max_vel
+annot_y_base = 0.8 * max_pdf
+annotate!(plot_hist, annot_x, annot_y_base, text("$sig", :left, 10, :black))
+annotate!(plot_hist, annot_x, annot_y_base - 0.1 * max_pdf, text("p = $(round(p_mw, sigdigits=2))", :left, 8, :black))
+annotate!(plot_hist, annot_x, annot_y_base - 0.2 * max_pdf, text("Cohen's d = $(round(cohens_d, digits=2))", :left, 8, :black))
+
+display(plot_hist)
+savefig(plot_hist, path_non_spaced * "overlaid_histogram_with_fits_annotated.png")
